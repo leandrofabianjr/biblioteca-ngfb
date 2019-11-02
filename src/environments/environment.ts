@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  firebaseConfig: {
+  firebase: {
     apiKey: 'AIzaSyC3YkqUXdQ0JEKGLLVYViQQdby1Ct9fQBM',
     authDomain: 'biblioteca-lfj.firebaseapp.com',
     databaseURL: 'https://biblioteca-lfj.firebaseio.com',
