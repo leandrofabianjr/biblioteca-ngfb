@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {Genre, GenresService} from '../services/genres.service';
+import {IGenreDTO, GenresService} from '../services/genres.service';
 import {Observable} from 'rxjs';
 
 @Component({
@@ -8,7 +8,7 @@ import {Observable} from 'rxjs';
   styleUrls: ['./genres.component.sass']
 })
 export class GenresComponent implements OnInit {
-  genres: Observable<Genre[]>;
+  genres: Observable<IGenreDTO[]>;
 
   constructor(private gnrSrv: GenresService) {
     this.genres = gnrSrv.data;

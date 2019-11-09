@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Observable} from 'rxjs';
-import {Publisher, PublishersService} from '../services/publishers.service';
+import {IPublisherDTO, PublishersService} from '../services/publishers.service';
 
 @Component({
   selector: 'app-publishers',
@@ -8,7 +8,7 @@ import {Publisher, PublishersService} from '../services/publishers.service';
   styleUrls: ['./publishers.component.sass']
 })
 export class PublishersComponent implements OnInit {
-  publishers: Observable<Publisher[]>;
+  publishers: Observable<IPublisherDTO[]>;
 
   constructor(private pubSrv: PublishersService) {
     this.publishers = pubSrv.data;

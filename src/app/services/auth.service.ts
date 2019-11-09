@@ -8,7 +8,7 @@ import {Router} from '@angular/router';
 import {first, switchMap, tap} from 'rxjs/operators';
 import {auth} from 'firebase';
 
-export interface AppUser {
+export interface IAppUserDTO {
   uid: string;
   email: string;
   name: string;
@@ -19,7 +19,7 @@ export interface AppUser {
   providedIn: 'root'
 })
 export class AuthService {
-  user: Observable<AppUser|null>;
+  user: Observable<IAppUserDTO|null>;
 
   constructor(
     public afAuth: AngularFireAuth,
@@ -29,7 +29,7 @@ export class AuthService {
     this.user = this.afAuth.authState.pipe(
       switchMap(user => {
         if (user) {
-          return this.afs.doc<AppUser>(`users/${user.uid}`).valueChanges();
+          return this.afs.doc<IAppUserDTO>(`users/${user.uid}`).valueChanges();
         }
         return of(null);
       }));
@@ -45,7 +45,7 @@ export class AuthService {
 
   private updateUserData(user) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
-    const data: AppUser = {
+    const data: IAppUserDTO = {
       uid: user.uid,
       email: user.email,
       name: user.displayName,

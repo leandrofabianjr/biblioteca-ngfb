@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {AuthService} from './auth.service';
-import {BaseModel, BaseModelService} from './base-model.service';
+import {IBaseDTO, BaseDTOService} from './base-dto.service';
 
-export interface Publisher extends BaseModel{
+export interface IPublisherDTO extends IBaseDTO{
   name: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class PublishersService extends BaseModelService<Publisher> {
+export class PublishersService extends BaseDTOService<IPublisherDTO> {
   constructor(afs: AngularFirestore, auth: AuthService) {
     super(afs, auth, 'publishers');
   }

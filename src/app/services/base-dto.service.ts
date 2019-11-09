@@ -2,12 +2,12 @@ import {AngularFirestore, AngularFirestoreCollection, QueryDocumentSnapshot, Que
 import {BehaviorSubject, from, Observable} from 'rxjs';
 import {AuthService} from './auth.service';
 
-export interface BaseModel {
+export interface IBaseDTO {
   id: string;
   uid: string;
 }
 
-export class BaseModelService<T extends BaseModel> {
+export class BaseDTOService<T extends IBaseDTO> {
   private collection: (queryFn?: QueryFn) => AngularFirestoreCollection<T>;
   private dataSjt: BehaviorSubject<T[]> = new BehaviorSubject<T[]>([]);
 
@@ -22,7 +22,7 @@ export class BaseModelService<T extends BaseModel> {
   protected buildModel(d: QueryDocumentSnapshot<any>) {
     return { id: d.id, ...d.data()} as T;
   }
-  
+
   load(limit = 10, orderBy = 'uid') {
     this.auth.user.subscribe(u => {
       this.collection(ref => ref

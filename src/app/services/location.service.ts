@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
-import {BaseModel, BaseModelService} from './base-model.service';
+import {IBaseDTO, BaseDTOService} from './base-dto.service';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {AuthService} from './auth.service';
 
-export interface Location extends BaseModel {
+export interface ILocationDTO extends IBaseDTO {
   description: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class LocationService extends BaseModelService<Location> {
+export class LocationService extends BaseDTOService<ILocationDTO> {
   constructor(afs: AngularFirestore, auth: AuthService) {
     super(afs, auth, 'locations');
   }

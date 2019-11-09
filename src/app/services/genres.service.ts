@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
-import {BaseModel, BaseModelService} from './base-model.service';
+import {IBaseDTO, BaseDTOService} from './base-dto.service';
 import {AngularFirestore} from '@angular/fire/firestore';
 import {AuthService} from './auth.service';
 
-export interface Genre extends BaseModel {
+export interface IGenreDTO extends IBaseDTO {
   description: string;
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class GenresService extends BaseModelService<Genre> {
+export class GenresService extends BaseDTOService<IGenreDTO> {
   constructor(afs: AngularFirestore, auth: AuthService) {
     super(afs, auth, 'genres');
   }

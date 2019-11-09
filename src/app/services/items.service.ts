@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import {BaseModel, BaseModelService} from './base-model.service';
+import {IBaseDTO, BaseDTOService} from './base-dto.service';
 import {AngularFirestore, DocumentReference, QueryDocumentSnapshot} from '@angular/fire/firestore';
 import {AuthService} from './auth.service';
 
-export interface Item extends BaseModel {
+export interface IItemDTO extends IBaseDTO {
   description: string;
   publishers: [];
   year: number;
@@ -15,7 +15,7 @@ export interface Item extends BaseModel {
 @Injectable({
   providedIn: 'root'
 })
-export class ItemsService extends BaseModelService<Item> {
+export class ItemsService extends BaseDTOService<IItemDTO> {
   constructor(afs: AngularFirestore, auth: AuthService) {
     super(afs, auth, 'items');
   }
@@ -24,7 +24,7 @@ export class ItemsService extends BaseModelService<Item> {
     super.load(limit, orderBy);
   }
 
-  protected buildModel(d: QueryDocumentSnapshot<Item>): Item {
+  protected buildModel(d: QueryDocumentSnapshot<IItemDTO>): IItemDTO {
     return super.buildModel(d);
   }
 }

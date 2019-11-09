@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Observable} from 'rxjs';
-import {Item, ItemsService} from '../services/items.service';
+import {IItemDTO, ItemsService} from '../services/items.service';
 
 @Component({
   selector: 'app-items',
@@ -8,7 +8,7 @@ import {Item, ItemsService} from '../services/items.service';
   styleUrls: ['./items.component.sass']
 })
 export class ItemsComponent implements OnInit {
-  items: Observable<Item[]>;
+  items: Observable<IItemDTO[]>;
 
   constructor(private itmSrv: ItemsService) {
     this.items = itmSrv.data;
