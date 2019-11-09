@@ -1,49 +1,51 @@
-import {AngularFirestore, AngularFirestoreCollection, QueryDocumentSnapshot, QueryFn} from '@angular/fire/firestore';
-import {BehaviorSubject, from, Observable} from 'rxjs';
+import {AngularFirestore, AngularFirestoreCollection, DocumentReference, QueryDocumentSnapshot, QueryFn} from '@angular/fire/firestore';
+import {BehaviorSubject, forkJoin, from, Observable} from 'rxjs';
 import {AuthService} from './auth.service';
+import {IModel} from '../models/model.interface';
 
-export interface IBaseDTO {
+export interface IDto {
   id: string;
   uid: string;
 }
 
-export class BaseDTOService<T extends IBaseDTO> {
-  private collection: (queryFn?: QueryFn) => AngularFirestoreCollection<T>;
+export abstract class BaseDtoService<T extends IModel, T_DTO extends IDto> {
+  private collection: (queryFn?: QueryFn) => AngularFirestoreCollection<T_DTO>;
   private dataSjt: BehaviorSubject<T[]> = new BehaviorSubject<T[]>([]);
 
-  constructor(private afs: AngularFirestore, private auth: AuthService, collection: string) {
-    this.collection = (fn?) => afs.collection<T>(collection, fn);
+  protected constructor(protected afs: AngularFirestore, private auth: AuthService, collection: string) {
+    this.collection = (fn?) => afs.collection<T_DTO>(collection, fn);
   }
 
   get data(): Observable<T[]> {
     return this.dataSjt.asObservable();
   }
 
-  protected buildModel(d: QueryDocumentSnapshot<any>) {
-    return { id: d.id, ...d.data()} as T;
-  }
+  protected abstract toModel(dto: T_DTO): Promise<T>;
+  protected abstract toDto(obj: T): T_DTO;
 
   load(limit = 10, orderBy = 'uid') {
     this.auth.user.subscribe(u => {
+      if (!u) { return; }
       this.collection(ref => ref
         .where('uid', '==', u.uid)
         .orderBy(orderBy, 'asc')
-      ).get().subscribe(r =>
-        this.dataSjt
-          .next(r.docs.map(d => this.buildModel(d)))
-      );
+      ).get().subscribe(r => {
+        Promise.all(r.docs.map(d => this.toModel({id: d.id, ...d.data()} as T_DTO)))
+          .then(objs => this.dataSjt.next(objs));
+      });
     }, error => console.error(error));
   }
 
   new(obj: T) {
-    delete obj.id;
-    return from(this.collection().add(obj).catch(err => console.error(err)));
+    const dto = this.toDto(obj);
+    delete dto.id;
+    return from(this.collection().add(dto).catch(err => console.error(err)));
   }
 
   update(obj: T) {
-    const id = obj.id;
-    delete obj.id;
-    return from(this.collection().doc(id).set(obj).catch(err => console.error(err)));
+    const dto = this.toDto(obj);
+    delete dto.id;
+    return from(this.collection().doc(obj.id).set(obj).catch(err => console.error(err)));
   }
 
   delete(id: string) {

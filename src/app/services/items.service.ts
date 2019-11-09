@@ -1,21 +1,30 @@
 import { Injectable } from '@angular/core';
-import {IBaseDTO, BaseDTOService} from './base-dto.service';
-import {AngularFirestore, DocumentReference, QueryDocumentSnapshot} from '@angular/fire/firestore';
+import {IDto, BaseDtoService} from './base-dto.service';
+import {AngularFirestore, DocumentReference} from '@angular/fire/firestore';
 import {AuthService} from './auth.service';
+import {Item} from '../models/item';
+import {IPublisherDTO} from './publishers.service';
+import {Publisher} from '../models/publisher';
+import {IAuthorDTO} from './authors.service';
+import {IGenreDTO} from './genres.service';
+import {Genre} from '../models/genre';
+import {Author} from '../models/author';
+import {ILocationDTO} from './location.service';
+import {Location} from '../models/location';
 
-export interface IItemDTO extends IBaseDTO {
+export interface IItemDTO extends IDto {
   description: string;
-  publishers: [];
+  publishers: DocumentReference[];
   year: number;
   location: DocumentReference;
-  authors: [];
-  genres: [];
+  authors: DocumentReference[];
+  genres: DocumentReference[];
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class ItemsService extends BaseDTOService<IItemDTO> {
+export class ItemsService extends BaseDtoService<Item, IItemDTO> {
   constructor(afs: AngularFirestore, auth: AuthService) {
     super(afs, auth, 'items');
   }
@@ -24,7 +33,68 @@ export class ItemsService extends BaseDTOService<IItemDTO> {
     super.load(limit, orderBy);
   }
 
-  protected buildModel(d: QueryDocumentSnapshot<IItemDTO>): IItemDTO {
-    return super.buildModel(d);
+  protected toDto(obj: Item): IItemDTO {
+    return {
+      id: obj.id,
+      uid: obj.uid,
+      description: obj.description,
+      publishers: obj.publishers.map(o => this.afs.doc(`publishers/${o.id}`).ref),
+      year: obj.year,
+      location: this.afs.doc(`publishers/${obj.location.id}`).ref,
+      authors: obj.authors.map(o => this.afs.doc(`authors/${o.id}`).ref),
+      genres: obj.genres.map(o => this.afs.doc(`genres/${o.id}`).ref)
+    };
+  }
+
+  protected toModel(dto: IItemDTO): Promise<Item> {
+    return Promise.all([
+      dto.location.get()
+        .then(ss => ({ id: ss.id, ...ss.data() } as ILocationDTO))
+        .then(l => {
+          const loc = new Location();
+          loc.id = l.id;
+          loc.uid = l.uid;
+          loc.description = l.description;
+          return loc;
+        }),
+      Promise.all(dto.publishers.map(ref => ref.get()))
+        .then((SSs) => SSs.map(ss => ({ id: ss.id, ...ss.data()} as IPublisherDTO)))
+        .then(pubs => pubs.map(p => {
+          const pub = new Publisher();
+          pub.id = p.id;
+          pub.uid = p.uid;
+          pub.name = p.name;
+          return pub;
+        })),
+      Promise.all(dto.authors.map(ref => ref.get()))
+        .then((SSs) => SSs.map(ss => ({ id: ss.id, ...ss.data()} as IAuthorDTO)))
+        .then(auts => auts.map(a => {
+          const aut = new Author();
+          aut.id = a.id;
+          aut.uid = a.uid;
+          aut.name = a.name;
+          return aut;
+        })),
+      Promise.all(dto.genres.map(ref => ref.get()))
+        .then((SSs) => SSs.map(ss => ({ id: ss.id, ...ss.data()} as IGenreDTO)))
+        .then(gnrs => gnrs.map(g => {
+          const gnr = new Genre();
+          gnr.id = g.id;
+          gnr.uid = g.uid;
+          gnr.description = g.description;
+          return gnr;
+        }))
+    ]).then(([loc, pubs, auts, gnrs]) => {
+        const obj = new Item();
+        obj.id = dto.id;
+        obj.uid = dto.uid;
+        obj.year = dto.year;
+        obj.description = dto.description;
+        obj.location = loc;
+        obj.publishers = pubs;
+        obj.authors = auts;
+        obj.genres = gnrs;
+        return obj;
+      });
   }
 }
