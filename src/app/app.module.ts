@@ -16,6 +16,7 @@ import { GenresComponent } from './genres/genres.component';
 import { LocationsComponent } from './locations/locations.component';
 import { PublishersComponent } from './publishers/publishers.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ItemsComponent } from './items/items.component';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     AuthorsComponent,
     GenresComponent,
     LocationsComponent,
-    PublishersComponent
+    PublishersComponent,
+    ItemsComponent
   ],
   imports: [
     BrowserModule,
