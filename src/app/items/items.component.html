@@ -1,9 +1,9 @@
 <ul>
   <li *ngFor="let a of items | async">
-    {{ a.id + ' - ' + a.description }}
-    <ul><li *ngFor="let b of a.publishers">{{ b.name }}</li></ul>
-    <ul><li *ngFor="let b of a.authors">{{ b.name }}</li></ul>
-    <ul><li *ngFor="let b of a.genres">{{ b.description }}</li></ul>
-    {{ a.location }}
+    {{ a.id + ' - ' + a.description }}<br>
+    Editoras: <ul><li *ngFor="let b of a.publishers">{{ b.name }}</li></ul>
+    Autores: <ul><li *ngFor="let b of a.authors">{{ b.name }}</li></ul>
+    Gêneros: <ul><li *ngFor="let b of a.genres">{{ b.description }}</li></ul>
+    {{ a.location.description }}
   </li>
 </ul>

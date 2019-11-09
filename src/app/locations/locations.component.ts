@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Observable} from 'rxjs';
-import {ILocationDTO, LocationService} from '../services/location.service';
+import {LocationService} from '../services/location.service';
+import {Location} from '../models/location';
 
 @Component({
   selector: 'app-locations',
@@ -8,7 +9,7 @@ import {ILocationDTO, LocationService} from '../services/location.service';
   styleUrls: ['./locations.component.sass']
 })
 export class LocationsComponent implements OnInit {
-  locations: Observable<ILocationDTO[]>;
+  locations: Observable<Location[]>;
 
   constructor(private locSrv: LocationService) {
     this.locations = locSrv.data;

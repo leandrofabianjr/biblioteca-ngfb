@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Observable} from 'rxjs';
-import {IItemDTO, ItemsService} from '../services/items.service';
+import {ItemsService} from '../services/items.service';
+import {Item} from '../models/item';
 
 @Component({
   selector: 'app-items',
@@ -8,13 +9,10 @@ import {IItemDTO, ItemsService} from '../services/items.service';
   styleUrls: ['./items.component.sass']
 })
 export class ItemsComponent implements OnInit {
-  items: Observable<IItemDTO[]>;
+  items: Observable<Item[]>;
 
   constructor(private itmSrv: ItemsService) {
     this.items = itmSrv.data;
-    this.items.subscribe(i => {
-      console.log(i);
-    });
   }
 
   ngOnInit() {

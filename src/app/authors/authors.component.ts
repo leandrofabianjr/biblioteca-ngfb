@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {IAuthorDTO, AuthorsService} from '../services/authors.service';
+import {AuthorsService} from '../services/authors.service';
 import {Observable} from 'rxjs';
+import {Author} from '../models/author';
 
 @Component({
   selector: 'app-authors',
@@ -8,7 +9,7 @@ import {Observable} from 'rxjs';
   styleUrls: ['./authors.component.sass']
 })
 export class AuthorsComponent implements OnInit {
-  authors: Observable<IAuthorDTO[]>;
+  authors: Observable<Author[]>;
 
   constructor(private autSrv: AuthorsService) {
     this.authors = autSrv.data;
