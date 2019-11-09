@@ -1,4 +1,4 @@
-import {AngularFirestore, AngularFirestoreCollection, QueryFn} from '@angular/fire/firestore';
+import {AngularFirestore, AngularFirestoreCollection, QueryDocumentSnapshot, QueryFn} from '@angular/fire/firestore';
 import {BehaviorSubject, from, Observable} from 'rxjs';
 import {AuthService} from './auth.service';
 
@@ -19,6 +19,10 @@ export class BaseModelService<T extends BaseModel> {
     return this.dataSjt.asObservable();
   }
 
+  protected buildModel(d: QueryDocumentSnapshot<any>) {
+    return { id: d.id, ...d.data()} as T;
+  }
+  
   load(limit = 10, orderBy = 'uid') {
     this.auth.user.subscribe(u => {
       this.collection(ref => ref
@@ -26,7 +30,7 @@ export class BaseModelService<T extends BaseModel> {
         .orderBy(orderBy, 'asc')
       ).get().subscribe(r =>
         this.dataSjt
-          .next(r.docs.map(d => ({ id: d.id, ...d.data()} as any)))
+          .next(r.docs.map(d => this.buildModel(d)))
       );
     }, error => console.error(error));
   }
