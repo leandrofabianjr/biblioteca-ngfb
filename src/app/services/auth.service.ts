@@ -38,15 +38,13 @@ export class AuthService {
   googleLogin() {
     return from(this.afAuth.auth.signInWithPopup(new auth.GoogleAuthProvider())
       .then((credential) => {
-        console.log(credential);
         this.updateUserData(credential.user);
-      }).catch(err => console.log(err)));
+      }).catch(err => console.error(err)));
   }
 
 
   private updateUserData(user) {
     const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
-    console.log(user);
     const data: AppUser = {
       uid: user.uid,
       email: user.email,

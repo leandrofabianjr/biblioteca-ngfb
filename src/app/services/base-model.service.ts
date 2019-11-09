@@ -26,17 +26,14 @@ export class BaseModelService<T extends BaseModel> {
         .orderBy(orderBy, 'asc')
       ).get().subscribe(r =>
         this.dataSjt
-          .next(r.docs.map(d => {
-            console.log(d);
-            return ({ id: d.id, ...d.data()} as any);
-          }))
+          .next(r.docs.map(d => ({ id: d.id, ...d.data()} as any)))
       );
-    }, error => console.log(error));
+    }, error => console.error(error));
   }
 
   new(obj: T) {
     delete obj.id;
-    return from(this.collection().add(obj).catch(err => console.log(err)));
+    return from(this.collection().add(obj).catch(err => console.error(err)));
   }
 
   update(obj: T) {
