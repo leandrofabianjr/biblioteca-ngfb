@@ -6,7 +6,7 @@ import {Location} from '../models/location';
 @Component({
   selector: 'app-locations',
   templateUrl: './locations.component.html',
-  styleUrls: ['./locations.component.sass']
+  styleUrls: ['./locations.component.scss']
 })
 export class LocationsComponent implements OnInit {
   locations: Observable<Location[]>;

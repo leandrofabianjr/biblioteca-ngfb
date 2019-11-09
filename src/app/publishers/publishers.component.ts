@@ -6,7 +6,7 @@ import {Publisher} from '../models/publisher';
 @Component({
   selector: 'app-publishers',
   templateUrl: './publishers.component.html',
-  styleUrls: ['./publishers.component.sass']
+  styleUrls: ['./publishers.component.scss']
 })
 export class PublishersComponent implements OnInit {
   publishers: Observable<Publisher[]>;

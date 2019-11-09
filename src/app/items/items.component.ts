@@ -6,7 +6,7 @@ import {Item} from '../models/item';
 @Component({
   selector: 'app-items',
   templateUrl: './items.component.html',
-  styleUrls: ['./items.component.sass']
+  styleUrls: ['./items.component.scss']
 })
 export class ItemsComponent implements OnInit {
   items: Observable<Item[]>;

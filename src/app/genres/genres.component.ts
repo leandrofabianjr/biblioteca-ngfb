@@ -6,7 +6,7 @@ import {Genre} from '../models/genre';
 @Component({
   selector: 'app-genres',
   templateUrl: './genres.component.html',
-  styleUrls: ['./genres.component.sass']
+  styleUrls: ['./genres.component.scss']
 })
 export class GenresComponent implements OnInit {
   genres: Observable<Genre[]>;

@@ -6,7 +6,7 @@ import {Author} from '../models/author';
 @Component({
   selector: 'app-authors',
   templateUrl: './authors.component.html',
-  styleUrls: ['./authors.component.sass']
+  styleUrls: ['./authors.component.scss']
 })
 export class AuthorsComponent implements OnInit {
   authors: Observable<Author[]>;
