@@ -15,6 +15,7 @@ import { AuthorsComponent } from './authors/authors.component';
 import { GenresComponent } from './genres/genres.component';
 import { LocationsComponent } from './locations/locations.component';
 import { PublishersComponent } from './publishers/publishers.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { PublishersComponent } from './publishers/publishers.component';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireAuthModule,
-    AngularFireAuthGuardModule
+    AngularFireAuthGuardModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
