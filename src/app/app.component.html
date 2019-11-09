@@ -1,10 +1,33 @@
-<a style="margin-right: 16px" [routerLink]="'login'">login</a>
-<a style="margin-right: 16px" [routerLink]="'logout'">logout</a>
-<a style="margin-right: 16px" [routerLink]="'me'">me</a>
-<a style="margin-right: 16px" [routerLink]="'authors'">authors</a>
-<a style="margin-right: 16px" [routerLink]="'genres'">genres</a>
-<a style="margin-right: 16px" [routerLink]="'locations'">locations</a>
-<a style="margin-right: 16px" [routerLink]="'publishers'">publishers</a>
-<a style="margin-right: 16px" [routerLink]="'items'">items</a>
-<br>
-<router-outlet></router-outlet>
+<!--<a style="margin-right: 16px" [routerLink]="'login'">login</a>-->
+<!--<a style="margin-right: 16px" [routerLink]="'logout'">logout</a>-->
+<!--<a style="margin-right: 16px" [routerLink]="'me'">me</a>-->
+<!--<a style="margin-right: 16px" [routerLink]="'authors'">authors</a>-->
+<!--<a style="margin-right: 16px" [routerLink]="'genres'">genres</a>-->
+<!--<a style="margin-right: 16px" [routerLink]="'locations'">locations</a>-->
+<!--<a style="margin-right: 16px" [routerLink]="'publishers'">publishers</a>-->
+<!--<a style="margin-right: 16px" [routerLink]="'items'">items</a>-->
+<!--<br>-->
+<!--<router-outlet></router-outlet>-->
+
+<div class="screen-container" [class.is-mobile]="mobileQuery.matches">
+  <mat-toolbar color="primary" class="screen-toolbar">
+    <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
+    <h1 class="app-name">Biblioteca</h1>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'"
+                 [fixedInViewport]="mobileQuery.matches">
+      <mat-nav-list class="nav-list">
+        <a mat-list-item [routerLink]="['/item','novo']" (click)="snav.toggle()">Novo item</a>
+        <a mat-list-item [routerLink]="['/item', 'listar']" (click)="snav.toggle()">Listar itens</a>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <div class="container">
+        <router-outlet></router-outlet>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

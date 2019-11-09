@@ -17,6 +17,7 @@ import { LocationsComponent } from './locations/locations.component';
 import { PublishersComponent } from './publishers/publishers.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ItemsComponent } from './items/items.component';
+import {MatButtonModule, MatIconModule, MatListModule, MatSidenavModule, MatToolbarModule} from '@angular/material';
 
 
 @NgModule({
@@ -38,7 +39,12 @@ import { ItemsComponent } from './items/items.component';
     AngularFirestoreModule,
     AngularFireAuthModule,
     AngularFireAuthGuardModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatSidenavModule,
+    MatListModule,
+    MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]
