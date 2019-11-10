@@ -17,7 +17,15 @@ import { LocationsComponent } from './locations/locations.component';
 import { PublishersComponent } from './publishers/publishers.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ItemsComponent } from './items/items.component';
-import {MatButtonModule, MatCardModule, MatIconModule, MatListModule, MatSidenavModule, MatToolbarModule} from '@angular/material';
+import {
+  MatButtonModule,
+  MatCardModule, MatChipsModule,
+  MatIconModule,
+  MatListModule, MatPaginatorModule,
+  MatSidenavModule,
+  MatTableModule,
+  MatToolbarModule
+} from '@angular/material';
 
 
 @NgModule({
@@ -45,7 +53,10 @@ import {MatButtonModule, MatCardModule, MatIconModule, MatListModule, MatSidenav
     MatSidenavModule,
     MatListModule,
     MatButtonModule,
-    MatCardModule
+    MatCardModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatChipsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
