@@ -17,7 +17,7 @@ import { LocationsComponent } from './locations/locations.component';
 import { PublishersComponent } from './publishers/publishers.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ItemsComponent } from './items/items.component';
-import {MatButtonModule, MatIconModule, MatListModule, MatSidenavModule, MatToolbarModule} from '@angular/material';
+import {MatButtonModule, MatCardModule, MatIconModule, MatListModule, MatSidenavModule, MatToolbarModule} from '@angular/material';
 
 
 @NgModule({
@@ -44,7 +44,8 @@ import {MatButtonModule, MatIconModule, MatListModule, MatSidenavModule, MatTool
     MatIconModule,
     MatSidenavModule,
     MatListModule,
-    MatButtonModule
+    MatButtonModule,
+    MatCardModule
   ],
   providers: [],
   bootstrap: [AppComponent]

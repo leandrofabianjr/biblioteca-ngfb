@@ -1,0 +1,34 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  background-color: #3f51b5;
+}
+
+h1 {
+  text-align: center;
+  color: white;
+  margin-bottom: 40px;
+}
+
+.card {
+  padding: 32px;
+  min-width: 40vw;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  .btn-login {
+    justify-self: stretch;
+  }
+  p {
+    text-align: center;
+  }
+  .error-text {
+    font-size: 14px;
+    color: red;
+  }
+}
+
