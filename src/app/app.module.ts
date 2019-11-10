@@ -21,11 +21,12 @@ import {
   MatButtonModule,
   MatCardModule, MatChipsModule,
   MatIconModule,
-  MatListModule, MatPaginatorModule,
+  MatListModule, MatPaginatorIntl, MatPaginatorModule,
   MatSidenavModule,
   MatTableModule,
   MatToolbarModule
 } from '@angular/material';
+import {MatPaginatorIntlPtbr} from './mat-paginator-intl-ptbr';
 
 
 @NgModule({
@@ -58,7 +59,7 @@ import {
     MatPaginatorModule,
     MatChipsModule
   ],
-  providers: [],
+  providers: [{ provide: MatPaginatorIntl, useClass: MatPaginatorIntlPtbr}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
