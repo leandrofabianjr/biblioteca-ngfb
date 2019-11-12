@@ -1,7 +1,9 @@
-import {AngularFirestore, AngularFirestoreCollection, DocumentReference, QueryDocumentSnapshot, QueryFn} from '@angular/fire/firestore';
-import {BehaviorSubject, forkJoin, from, Observable} from 'rxjs';
+import {AngularFirestore, AngularFirestoreCollection, FieldPath, QueryFn} from '@angular/fire/firestore';
+import {BehaviorSubject, from, Observable, of} from 'rxjs';
 import {AuthService} from './auth.service';
 import {IModel} from '../models/model.interface';
+import WhereFilterOp = firebase.firestore.WhereFilterOp;
+import {flatMap, map} from 'rxjs/operators';
 
 export interface IDto {
   id: string;
@@ -36,19 +38,70 @@ export abstract class BaseDtoService<T extends IModel, T_DTO extends IDto> {
     }, error => console.error(error));
   }
 
-  new(obj: T) {
-    const dto = this.toDto(obj);
-    delete dto.id;
-    return from(this.collection().add(dto).catch(err => console.error(err)));
+  findOneWhere(fieldPath: string | FieldPath, opStr: WhereFilterOp, value: any): Observable<T|null> {
+    return this.auth.user.pipe(
+      map(u => {
+        if (!u) { throw Error(); }
+        return u.uid;
+      }),
+      flatMap(uid => uid
+        ? this.collection(ref => ref
+          .where('uid', '==', uid)
+          .where(fieldPath, opStr, value)
+          .limit(1)
+          ).get()
+        : null
+      ),
+      flatMap((ss) => {
+        if (!ss) { return of(null); }
+        const doc = ss.docs[0];
+        return from(this.toModel({id: doc.id, ...doc.data()} as T_DTO));
+      })
+    );
   }
 
-  update(obj: T) {
-    const dto = this.toDto(obj);
-    delete dto.id;
-    return from(this.collection().doc(obj.id).set(obj).catch(err => console.error(err)));
+  new(obj: T): Observable<T> {
+    return this.auth.user.pipe(
+      map(u => {
+        if (!u) { throw Error(); }
+        return u.uid;
+      }),
+      flatMap(uid => {
+        obj.uid = uid;
+        const dto = this.toDto(obj);
+        delete dto.id;
+        return from(this.collection().add(dto)
+          .then(ref => ref.get())
+          .then(ss => this.toModel({id: ss.id, ...ss.data()} as T_DTO)));
+      })
+    );
   }
 
-  delete(id: string) {
-    return from(this.collection().doc(id).delete().catch(err => console.error(err)));
+  update(obj: T): Observable<T> {
+    const dto = this.toDto(obj);
+    delete dto.id;
+    return from(this.collection().doc(obj.id).set(obj)
+      .then(res => {
+        console.log(res);
+        return obj;
+      }));
+  }
+
+  delete(id: string): Observable<boolean> {
+    return from(this.collection().doc(id).delete()
+      .then(res => {
+        console.log(res);
+        return true;
+      })
+      .catch(err => {
+        console.error(err);
+        return false;
+      }));
+  }
+
+  save(obj: T): Observable<T|null> {
+    return obj.id
+      ? this.update(obj)
+      : this.new(obj);
   }
 }
