@@ -34,6 +34,8 @@ import {NgSelectModule} from '@ng-select/ng-select';
 import { RealTimeSearchDirective } from './directives/real-time-search.directive';
 import { AuthorsNewComponent } from './authors/authors-new/authors-new.component';
 import { GenresNewComponent } from './genres/genres-new/genres-new.component';
+import { LocationsNewComponent } from './locations/locations-new/locations-new.component';
+import { PublishersNewComponent } from './publishers/publishers-new/publishers-new.component';
 
 
 @NgModule({
@@ -51,7 +53,9 @@ import { GenresNewComponent } from './genres/genres-new/genres-new.component';
     InfoErroCampoComponent,
     RealTimeSearchDirective,
     AuthorsNewComponent,
-    GenresNewComponent
+    GenresNewComponent,
+    LocationsNewComponent,
+    PublishersNewComponent
   ],
   imports: [
     BrowserModule,
@@ -81,7 +85,9 @@ import { GenresNewComponent } from './genres/genres-new/genres-new.component';
   bootstrap: [AppComponent],
   entryComponents: [
     AuthorsNewComponent,
-    GenresNewComponent
+    GenresNewComponent,
+    PublishersNewComponent,
+    LocationsNewComponent
   ]
 })
 export class AppModule { }

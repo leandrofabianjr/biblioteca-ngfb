@@ -6,6 +6,10 @@ import {Author} from '../models/author';
 import {AuthorsNewComponent} from '../authors/authors-new/authors-new.component';
 import {Genre} from '../models/genre';
 import {GenresNewComponent} from '../genres/genres-new/genres-new.component';
+import {Location} from '../models/location';
+import {LocationsNewComponent} from '../locations/locations-new/locations-new.component';
+import {Publisher} from '../models/publisher';
+import {PublishersNewComponent} from '../publishers/publishers-new/publishers-new.component';
 
 @Component({
   selector: 'app-items',
@@ -37,11 +41,11 @@ export class ItemsComponent implements OnInit {
     this.dialog.open(GenresNewComponent, { data: genre });
   }
 
-  // editarEditora(editora: Editora) {
-  //   this.dialog.open(EditoraFormComponent, { data: editora });
-  // }
-  //
-  // editarLocal(local: Local) {
-  //   this.dialog.open(LocalFormComponent, { data: local });
-  // }
+  editPublisher(publisher: Publisher) {
+    this.dialog.open(PublishersNewComponent, { data: publisher });
+  }
+
+  editLocation(location: Location) {
+    this.dialog.open(LocationsNewComponent, { data: location });
+  }
 }
