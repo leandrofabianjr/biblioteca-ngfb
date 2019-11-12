@@ -9,7 +9,7 @@ import {IAuthorDTO} from './authors.service';
 import {IGenreDTO} from './genres.service';
 import {Genre} from '../models/genre';
 import {Author} from '../models/author';
-import {ILocationDTO} from './location.service';
+import {ILocationDTO} from './locations.service';
 import {Location} from '../models/location';
 
 export interface IItemDTO extends IDto {

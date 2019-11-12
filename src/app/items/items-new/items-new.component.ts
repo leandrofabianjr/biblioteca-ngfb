@@ -6,7 +6,7 @@ import {AuthorsService} from '../../services/authors.service';
 import {PublishersService} from '../../services/publishers.service';
 import {GenresService} from '../../services/genres.service';
 import {MatDialog} from '@angular/material';
-import {LocationService} from '../../services/location.service';
+import {LocationsService} from '../../services/locations.service';
 import {Author} from '../../models/author';
 import {Publisher} from '../../models/publisher';
 import {Genre} from '../../models/genre';
@@ -41,7 +41,7 @@ export class ItemsNewComponent {
     private autSrv: AuthorsService,
     private pubSrv: PublishersService,
     private gnrSrv: GenresService,
-    private locSrv: LocationService,
+    private locSrv: LocationsService,
     public dialog: MatDialog
   ) {
     console.log('------------');
