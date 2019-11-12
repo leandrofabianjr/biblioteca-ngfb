@@ -78,13 +78,18 @@ export abstract class BaseDtoService<T extends IModel, T_DTO extends IDto> {
   }
 
   update(obj: T): Observable<T> {
-    const dto = this.toDto(obj);
-    delete dto.id;
-    return from(this.collection().doc(obj.id).set(obj)
-      .then(res => {
-        console.log(res);
-        return obj;
-      }));
+    return this.auth.user.pipe(
+      map(u => {
+        if (!u) { throw Error(); }
+        return u.uid;
+      }),
+      flatMap(uid => {
+        obj.uid = uid;
+        const dto = this.toDto(obj);
+        delete dto.id;
+        return from(this.collection().doc(obj.id).update(dto).then(() => obj));
+      })
+    );
   }
 
   delete(id: string): Observable<boolean> {
@@ -99,7 +104,7 @@ export abstract class BaseDtoService<T extends IModel, T_DTO extends IDto> {
       }));
   }
 
-  save(obj: T): Observable<T|null> {
+  save(obj: T): Observable<T> {
     return obj.id
       ? this.update(obj)
       : this.new(obj);
