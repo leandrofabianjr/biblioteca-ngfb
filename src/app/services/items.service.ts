@@ -40,7 +40,7 @@ export class ItemsService extends BaseDtoService<Item, IItemDTO> {
       description: obj.description,
       publishers: obj.publishers.map(o => this.afs.doc(`publishers/${o.id}`).ref),
       year: obj.year,
-      location: this.afs.doc(`publishers/${obj.location.id}`).ref,
+      location: this.afs.doc(`locations/${obj.location.id}`).ref,
       authors: obj.authors.map(o => this.afs.doc(`authors/${o.id}`).ref),
       genres: obj.genres.map(o => this.afs.doc(`genres/${o.id}`).ref)
     };
