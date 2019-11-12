@@ -1,0 +1,105 @@
+<mat-spinner *ngIf="!itemForm"></mat-spinner>
+
+<mat-card *ngIf="itemForm">
+  <mat-card-header>
+    <mat-card-title>{{ itemId ? 'Editar' : 'Novo' }} item</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="itemForm">
+      <mat-form-field>
+        <input
+          matInput
+          type="text"
+          id="description"
+          formControlName="description"
+          placeholder="Descrição"
+        >
+        <mat-error>
+          <app-info-erro-campo [control]="itemForm.controls['description']"></app-info-erro-campo>
+        </mat-error>
+      </mat-form-field>
+
+      <ng-select
+        id="authors"
+        [items]="authors"
+        formControlName="authors"
+        bindLabel="name"
+        [multiple]="true"
+        placeholder="Autor do item"
+        (appRealTimeSearch)="searchAuthors($event)"
+        [notFoundText]="'Digite alguma coisa...'"
+      ></ng-select>
+      <app-info-erro-campo
+        [control]="itemForm.controls['authors']"
+        [container]="false"
+      ></app-info-erro-campo>
+      <button mat-button (click)="newAuthor()" color="accent">Não encontrou o autor?</button>
+
+      <ng-select
+        id="publishers"
+        [items]="publishers"
+        formControlName="publishers"
+        bindLabel="name"
+        [multiple]="true"
+        placeholder="Editora do item"
+        (appRealTimeSearch)="searchPublishers($event)"
+        [notFoundText]="'Digite alguma coisa...'"
+      ></ng-select>
+      <app-info-erro-campo
+        [control]="itemForm.controls['publishers']"
+        [container]="false"
+      ></app-info-erro-campo>
+      <button mat-button (click)="newPublisher()" color="accent">Não encontrou a editora?</button>
+
+      <ng-select
+        id="genres"
+        [items]="genres"
+        formControlName="genres"
+        bindLabel="description"
+        [multiple]="true"
+        placeholder="Gênero do item"
+        (appRealTimeSearch)="searchGenres($event)"
+        [notFoundText]="'Digite alguma coisa...'"
+      ></ng-select>
+      <app-info-erro-campo
+        [control]="itemForm.controls['genres']"
+        [container]="false"
+      ></app-info-erro-campo>
+      <button mat-button (click)="newGenre()" color="accent">Não encontrou o gênero?</button>
+
+      <mat-form-field>
+        <input
+          matInput
+          type="number"
+          id="year"
+          formControlName="year"
+          placeholder="Ano do item"
+        >
+        <mat-error>
+          <app-info-erro-campo [control]="itemForm.controls['year']"></app-info-erro-campo>
+        </mat-error>
+      </mat-form-field>
+
+      <ng-select
+        id="location"
+        [items]="locations"
+        formControlName="location"
+        bindLabel="description"
+        [multiple]="false"
+        placeholder="Local onde está o item"
+        (appRealTimeSearch)="searchLocations($event)"
+        [notFoundText]="'Digite alguma coisa...'"
+      ></ng-select>
+      <app-info-erro-campo
+        [control]="itemForm.controls['location']"
+        [container]="false"
+      ></app-info-erro-campo>
+      <button mat-button (click)="newLocation()" color="accent">Não encontrou o local?</button>
+    </form>
+
+  </mat-card-content>
+  <mat-card-actions>
+    <button [disabled]="itemForm.invalid" (click)="save()" mat-raised-button color="primary">Salvar</button>
+  </mat-card-actions>
+</mat-card>
