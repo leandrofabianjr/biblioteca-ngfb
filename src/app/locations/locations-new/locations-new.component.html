@@ -1,0 +1,22 @@
+<h1 mat-dialog-title>{{ location ? 'Editar' : 'Novo' }} local</h1>
+<div mat-dialog-content>
+  <form [formGroup]="locationForm">
+    <mat-form-field>
+      <input
+        matInput
+        type="text"
+        id="description"
+        formControlName="description"
+        placeholder="Descrição"
+      >
+      <mat-error>
+        <app-info-erro-campo [control]="locationForm.controls['description']"></app-info-erro-campo>
+      </mat-error>
+    </mat-form-field>
+
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="null">Cancelar</button>
+  <button mat-button [disabled]="locationForm.invalid" (click)="save()" class="btn btn-primary">Salvar</button>
+</div>
