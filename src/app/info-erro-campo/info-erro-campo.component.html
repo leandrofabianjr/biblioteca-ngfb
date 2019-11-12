@@ -1,0 +1,8 @@
+<div *ngIf="!container && mensagem" class="mat-error" style="margin-top: -18px; font-size: 75%;">
+  {{ mensagem }}
+  <br/>
+</div>
+
+<ng-container *ngIf="container && mensagem">
+  {{ mensagem }}
+</ng-container>
