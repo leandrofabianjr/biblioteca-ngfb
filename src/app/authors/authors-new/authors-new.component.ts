@@ -37,7 +37,7 @@ export class AuthorsNewComponent implements OnInit {
             author = aut;
             this.dialogRef.close(author);
           },
-          err => console.error('Erro ao salvar author', err)
+          err => console.error('Erro ao salvar autor', err)
         );
     }
   }
