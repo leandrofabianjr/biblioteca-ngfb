@@ -33,9 +33,11 @@ export class AuthorsNewComponent implements OnInit {
 
       this.autSrv.save(author)
         .subscribe(
-          aut => author = aut,
-          err => console.error('Erro ao salvar author', err),
-          () => this.dialogRef.close(author)
+          aut => {
+            author = aut;
+            this.dialogRef.close(author);
+          },
+          err => console.error('Erro ao salvar author', err)
         );
     }
   }
