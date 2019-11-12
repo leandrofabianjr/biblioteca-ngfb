@@ -9,6 +9,7 @@ import {GenresComponent} from './genres/genres.component';
 import {LocationsComponent} from './locations/locations.component';
 import {PublishersComponent} from './publishers/publishers.component';
 import {ItemsComponent} from './items/items.component';
+import {ItemsNewComponent} from './items/items-new/items-new.component';
 
 
 const routes: Routes = [
@@ -21,7 +22,12 @@ const routes: Routes = [
   { path: 'genres', component: GenresComponent, ...canActivate(() => redirectUnauthorizedTo(['login']))},
   { path: 'locations', component: LocationsComponent, ...canActivate(() => redirectUnauthorizedTo(['login']))},
   { path: 'publishers', component: PublishersComponent, ...canActivate(() => redirectUnauthorizedTo(['login']))},
-  { path: 'items', component: ItemsComponent, ...canActivate(() => redirectUnauthorizedTo(['login']))},
+  { path: 'items', ...canActivate(() => redirectUnauthorizedTo(['login'])),
+    children: [
+      { path: '', component: ItemsComponent },
+      { path: 'new', component: ItemsNewComponent }
+    ]
+  },
 ];
 
 @NgModule({
