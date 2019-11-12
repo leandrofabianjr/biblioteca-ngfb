@@ -19,14 +19,20 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ItemsComponent } from './items/items.component';
 import {
   MatButtonModule,
-  MatCardModule, MatChipsModule,
-  MatIconModule,
-  MatListModule, MatPaginatorIntl, MatPaginatorModule,
+  MatCardModule, MatChipsModule, MatDialogModule, MatFormFieldModule,
+  MatIconModule, MatInputModule,
+  MatListModule, MatPaginatorIntl, MatPaginatorModule, MatProgressSpinnerModule,
   MatSidenavModule,
   MatTableModule,
   MatToolbarModule
 } from '@angular/material';
 import {MatPaginatorIntlPtbr} from './mat-paginator-intl-ptbr';
+import { ItemsNewComponent } from './items/items-new/items-new.component';
+import {ReactiveFormsModule} from '@angular/forms';
+import { InfoErroCampoComponent } from './info-erro-campo/info-erro-campo.component';
+import {NgSelectModule} from '@ng-select/ng-select';
+import { RealTimeSearchDirective } from './directives/real-time-search.directive';
+import { AuthorsNewComponent } from './authors/authors-new/authors-new.component';
 
 
 @NgModule({
@@ -39,7 +45,11 @@ import {MatPaginatorIntlPtbr} from './mat-paginator-intl-ptbr';
     GenresComponent,
     LocationsComponent,
     PublishersComponent,
-    ItemsComponent
+    ItemsComponent,
+    ItemsNewComponent,
+    InfoErroCampoComponent,
+    RealTimeSearchDirective,
+    AuthorsNewComponent
   ],
   imports: [
     BrowserModule,
@@ -57,9 +67,18 @@ import {MatPaginatorIntlPtbr} from './mat-paginator-intl-ptbr';
     MatCardModule,
     MatTableModule,
     MatPaginatorModule,
-    MatChipsModule
+    MatChipsModule,
+    MatProgressSpinnerModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    NgSelectModule,
+    MatDialogModule
   ],
   providers: [{ provide: MatPaginatorIntl, useClass: MatPaginatorIntlPtbr}],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    AuthorsNewComponent
+  ]
 })
 export class AppModule { }
