@@ -11,7 +11,7 @@ export interface ILocationDTO extends IDto {
 @Injectable({
   providedIn: 'root'
 })
-export class LocationService extends BaseDtoService<Location, ILocationDTO> {
+export class LocationsService extends BaseDtoService<Location, ILocationDTO> {
   constructor(afs: AngularFirestore, auth: AuthService) {
     super(afs, auth, 'locations');
   }

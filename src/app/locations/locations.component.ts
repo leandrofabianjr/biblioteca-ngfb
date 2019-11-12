@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {Observable} from 'rxjs';
-import {LocationService} from '../services/location.service';
+import {LocationsService} from '../services/locations.service';
 import {Location} from '../models/location';
 
 @Component({
@@ -11,7 +11,7 @@ import {Location} from '../models/location';
 export class LocationsComponent implements OnInit {
   locations: Observable<Location[]>;
 
-  constructor(private locSrv: LocationService) {
+  constructor(private locSrv: LocationsService) {
     this.locations = locSrv.data;
   }
 
