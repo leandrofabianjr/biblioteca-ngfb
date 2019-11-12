@@ -33,6 +33,7 @@ import { InfoErroCampoComponent } from './info-erro-campo/info-erro-campo.compon
 import {NgSelectModule} from '@ng-select/ng-select';
 import { RealTimeSearchDirective } from './directives/real-time-search.directive';
 import { AuthorsNewComponent } from './authors/authors-new/authors-new.component';
+import { GenresNewComponent } from './genres/genres-new/genres-new.component';
 
 
 @NgModule({
@@ -49,7 +50,8 @@ import { AuthorsNewComponent } from './authors/authors-new/authors-new.component
     ItemsNewComponent,
     InfoErroCampoComponent,
     RealTimeSearchDirective,
-    AuthorsNewComponent
+    AuthorsNewComponent,
+    GenresNewComponent
   ],
   imports: [
     BrowserModule,
@@ -78,7 +80,8 @@ import { AuthorsNewComponent } from './authors/authors-new/authors-new.component
   providers: [{ provide: MatPaginatorIntl, useClass: MatPaginatorIntlPtbr}],
   bootstrap: [AppComponent],
   entryComponents: [
-    AuthorsNewComponent
+    AuthorsNewComponent,
+    GenresNewComponent
   ]
 })
 export class AppModule { }
