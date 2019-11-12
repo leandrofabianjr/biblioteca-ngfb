@@ -10,6 +10,7 @@ import {Location} from '../models/location';
 import {LocationsNewComponent} from '../locations/locations-new/locations-new.component';
 import {Publisher} from '../models/publisher';
 import {PublishersNewComponent} from '../publishers/publishers-new/publishers-new.component';
+import {DialogConfirmationComponent} from '../dialog-confirmation/dialog-confirmation.component';
 
 @Component({
   selector: 'app-items',
@@ -47,5 +48,19 @@ export class ItemsComponent implements OnInit {
 
   editLocation(location: Location) {
     this.dialog.open(LocationsNewComponent, { data: location });
+  }
+
+  remove(item: Item) {
+    const dialogRef = this.dialog.open(DialogConfirmationComponent);
+
+    dialogRef.afterClosed().subscribe((res: boolean) => {
+      if (res) {
+        this.itmSrv.delete(item.id)
+          .subscribe(
+            itm => null,
+            err => console.error('Erro ao remover item')
+          );
+      }
+    });
   }
 }

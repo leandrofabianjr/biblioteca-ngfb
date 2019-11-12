@@ -36,6 +36,7 @@ import { AuthorsNewComponent } from './authors/authors-new/authors-new.component
 import { GenresNewComponent } from './genres/genres-new/genres-new.component';
 import { LocationsNewComponent } from './locations/locations-new/locations-new.component';
 import { PublishersNewComponent } from './publishers/publishers-new/publishers-new.component';
+import { DialogConfirmationComponent } from './dialog-confirmation/dialog-confirmation.component';
 
 
 @NgModule({
@@ -55,7 +56,8 @@ import { PublishersNewComponent } from './publishers/publishers-new/publishers-n
     AuthorsNewComponent,
     GenresNewComponent,
     LocationsNewComponent,
-    PublishersNewComponent
+    PublishersNewComponent,
+    DialogConfirmationComponent
   ],
   imports: [
     BrowserModule,
@@ -87,7 +89,8 @@ import { PublishersNewComponent } from './publishers/publishers-new/publishers-n
     AuthorsNewComponent,
     GenresNewComponent,
     PublishersNewComponent,
-    LocationsNewComponent
+    LocationsNewComponent,
+    DialogConfirmationComponent
   ]
 })
 export class AppModule { }

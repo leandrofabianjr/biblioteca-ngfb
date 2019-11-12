@@ -94,14 +94,7 @@ export abstract class BaseDtoService<T extends IModel, T_DTO extends IDto> {
 
   delete(id: string): Observable<boolean> {
     return from(this.collection().doc(id).delete()
-      .then(res => {
-        console.log(res);
-        return true;
-      })
-      .catch(err => {
-        console.error(err);
-        return false;
-      }));
+      .then(() => true));
   }
 
   save(obj: T): Observable<T> {
