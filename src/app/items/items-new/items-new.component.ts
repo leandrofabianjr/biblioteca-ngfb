@@ -14,6 +14,8 @@ import {Location} from '../../models/location';
 import {Item} from '../../models/item';
 import {AuthorsNewComponent} from '../../authors/authors-new/authors-new.component';
 import {forkJoin} from 'rxjs';
+import {PublishersNewComponent} from '../../publishers/publishers-new/publishers-new.component';
+import {GenresNewComponent} from '../../genres/genres-new/genres-new.component';
 
 @Component({
   selector: 'app-items-new',
@@ -22,7 +24,7 @@ import {forkJoin} from 'rxjs';
 })
 export class ItemsNewComponent {
 
-  itemId: number;
+  itemId: string;
   itemForm: FormGroup;
   authors: Author[];
   publishers: Publisher[];
@@ -44,17 +46,16 @@ export class ItemsNewComponent {
     private locSrv: LocationsService,
     public dialog: MatDialog
   ) {
-    console.log('------------');
     this.route.params.subscribe(params => {
-      const id = +params.id;
+      const id = params.id;
       if (id) {
-        // this.itmSrv.findOne(id)
-        //   .subscribe(itm => {
-        //       this.itemId = id;
-        //       this.buildForm(itm);
-        //     },
-        //     err => console.error('Erro ao salvar item', err)
-        //   );
+        this.itmSrv.get(id)
+          .subscribe(itm => {
+              this.itemId = id;
+              this.buildForm(itm);
+            },
+            err => console.error('Erro ao procurar item', err)
+          );
       } else {
         this.buildForm();
       }
@@ -123,41 +124,42 @@ export class ItemsNewComponent {
   }
 
   newPublisher() {
-    // const dialogRef = this.dialog.open(EditoraFormComponent);
-    //
-    // dialogRef.afterClosed()
-    //   .subscribe((result: Editora) => {
-    //     if (result) {
-    //       this.itemForm.get('publishers')
-    //         .setValue(result);
-    //     }
-    //   });
+    const dialogRef = this.dialog.open(PublishersNewComponent);
+
+    dialogRef.afterClosed()
+      .subscribe((result: Publisher) => {
+        if (result) {
+          this.itemForm.get('publishers')
+            .setValue(
+              (this.itemForm.get('publishers').value || []).concat(result)
+            );
+        }
+      });
   }
 
   newGenre() {
-    // const dialogRef = this.dialog.open(GeneroFormComponent);
-    //
-    // dialogRef.afterClosed()
-    //   .subscribe((result: Genero) => {
-    //     if (result) {
-    //       this.itemForm.get('genres')
-    //         .setValue(
-    //           (this.itemForm.get('genres').value || []).concat(result)
-    //         );
-    //     }
-    //   });
+    const dialogRef = this.dialog.open(GenresNewComponent);
+
+    dialogRef.afterClosed()
+      .subscribe((result: Genre) => {
+        if (result) {
+          this.itemForm.get('genres')
+            .setValue(
+              (this.itemForm.get('genres').value || []).concat(result)
+            );
+        }
+      });
   }
 
   newLocation() {
-    // const dialogRef = this.dialog.open(LocalFormComponent);
-    //
-    // dialogRef.afterClosed()
-    //   .subscribe((result: Local) => {
-    //     if (result) {
-    //       this.itemForm.get('location')
-    //         .setValue(result);
-    //     }
-    //   });
+    const dialogRef = this.dialog.open(Location);
+
+    dialogRef.afterClosed()
+      .subscribe((result: Location) => {
+        if (result) {
+          this.itemForm.get('location').setValue(result);
+        }
+      });
   }
 
   searchAuthors(term: string) {
