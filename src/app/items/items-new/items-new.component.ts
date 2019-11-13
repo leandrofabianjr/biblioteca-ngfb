@@ -16,6 +16,7 @@ import {AuthorsNewComponent} from '../../authors/authors-new/authors-new.compone
 import {forkJoin} from 'rxjs';
 import {PublishersNewComponent} from '../../publishers/publishers-new/publishers-new.component';
 import {GenresNewComponent} from '../../genres/genres-new/genres-new.component';
+import {LocationsNewComponent} from '../../locations/locations-new/locations-new.component';
 
 @Component({
   selector: 'app-items-new',
@@ -81,7 +82,7 @@ export class ItemsNewComponent {
     if (this.itemForm.valid) {
 
       const item = new Item();
-      // item.id = this.itemId;
+      item.id = this.itemId;
       item.description = this.itemForm.get('description').value;
       item.authors = this.itemForm.get('authors').value;
       item.genres = this.itemForm.get('genres').value;
@@ -152,7 +153,7 @@ export class ItemsNewComponent {
   }
 
   newLocation() {
-    const dialogRef = this.dialog.open(Location);
+    const dialogRef = this.dialog.open(LocationsNewComponent);
 
     dialogRef.afterClosed()
       .subscribe((result: Location) => {

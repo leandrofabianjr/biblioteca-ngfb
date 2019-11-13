@@ -106,7 +106,7 @@ export abstract class BaseDtoService<T extends IModel, T_DTO extends IDto> {
   }
 
   get(id: string): Observable<T> {
-    return from(this.collection().doc(`${this.COLLECTION_PATH}/${id}`).get().pipe(
+    return from(this.collection().doc(id).get().pipe(
       flatMap((ss) => {
         if (!ss) { return of(null); }
         return from(this.toModel({id: ss.id, ...ss.data()} as T_DTO));
