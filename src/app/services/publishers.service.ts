@@ -12,8 +12,9 @@ export interface IPublisherDTO extends IDto {
   providedIn: 'root'
 })
 export class PublishersService extends BaseDtoService<Publisher, IPublisherDTO> {
+  static COLLECTION_PATH = 'publishers';
   constructor(afs: AngularFirestore, auth: AuthService) {
-    super(afs, auth, 'publishers');
+    super(afs, auth, PublishersService.COLLECTION_PATH);
   }
 
   load(limit: number = 10, orderBy: string = 'name') {

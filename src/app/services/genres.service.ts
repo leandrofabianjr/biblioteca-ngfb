@@ -12,8 +12,9 @@ export interface IGenreDTO extends IDto {
   providedIn: 'root'
 })
 export class GenresService extends BaseDtoService<Genre, IGenreDTO> {
+  static COLLECTION_PATH = 'genres';
   constructor(afs: AngularFirestore, auth: AuthService) {
-    super(afs, auth, 'genres');
+    super(afs, auth, GenresService.COLLECTION_PATH);
   }
 
   load(limit: number = 10, orderBy: string = 'description') {

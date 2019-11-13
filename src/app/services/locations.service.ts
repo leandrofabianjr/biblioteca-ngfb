@@ -12,8 +12,9 @@ export interface ILocationDTO extends IDto {
   providedIn: 'root'
 })
 export class LocationsService extends BaseDtoService<Location, ILocationDTO> {
+  static COLLECTION_PATH = 'locations';
   constructor(afs: AngularFirestore, auth: AuthService) {
-    super(afs, auth, 'locations');
+    super(afs, auth, LocationsService.COLLECTION_PATH);
   }
 
   load(limit: number = 10, orderBy: string = 'description') {

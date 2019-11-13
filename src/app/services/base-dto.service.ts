@@ -11,12 +11,12 @@ export interface IDto {
 }
 
 export abstract class BaseDtoService<T extends IModel, T_DTO extends IDto> {
-  readonly collectionPath: string;
+  private readonly COLLECTION_PATH;
   private collection: (queryFn?: QueryFn) => AngularFirestoreCollection<T_DTO>;
   private dataSjt: BehaviorSubject<T[]> = new BehaviorSubject<T[]>([]);
 
   protected constructor(protected afs: AngularFirestore, private auth: AuthService, collection: string) {
-    this.collectionPath = collection;
+    this.COLLECTION_PATH = collection;
     this.collection = (fn?) => afs.collection<T_DTO>(collection, fn);
   }
 
@@ -106,7 +106,7 @@ export abstract class BaseDtoService<T extends IModel, T_DTO extends IDto> {
   }
 
   get(id: string): Observable<T> {
-    return from(this.collection().doc(`${this.collectionPath}/${id}`).get().pipe(
+    return from(this.collection().doc(`${this.COLLECTION_PATH}/${id}`).get().pipe(
       flatMap((ss) => {
         if (!ss) { return of(null); }
         return from(this.toModel({id: ss.id, ...ss.data()} as T_DTO));

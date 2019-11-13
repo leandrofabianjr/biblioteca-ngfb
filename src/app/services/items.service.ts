@@ -3,13 +3,13 @@ import {IDto, BaseDtoService} from './base-dto.service';
 import {AngularFirestore, DocumentReference} from '@angular/fire/firestore';
 import {AuthService} from './auth.service';
 import {Item} from '../models/item';
-import {IPublisherDTO} from './publishers.service';
+import {IPublisherDTO, PublishersService} from './publishers.service';
 import {Publisher} from '../models/publisher';
-import {IAuthorDTO} from './authors.service';
-import {IGenreDTO} from './genres.service';
+import {AuthorsService, IAuthorDTO} from './authors.service';
+import {GenresService, IGenreDTO} from './genres.service';
 import {Genre} from '../models/genre';
 import {Author} from '../models/author';
-import {ILocationDTO} from './locations.service';
+import {ILocationDTO, LocationsService} from './locations.service';
 import {Location} from '../models/location';
 
 export interface IItemDTO extends IDto {
@@ -25,8 +25,9 @@ export interface IItemDTO extends IDto {
   providedIn: 'root'
 })
 export class ItemsService extends BaseDtoService<Item, IItemDTO> {
+  static COLLECTION_PATH = 'items';
   constructor(afs: AngularFirestore, auth: AuthService) {
-    super(afs, auth, 'items');
+    super(afs, auth, ItemsService.COLLECTION_PATH);
   }
 
   load(limit: number = 10, orderBy: string = 'description') {
@@ -38,11 +39,11 @@ export class ItemsService extends BaseDtoService<Item, IItemDTO> {
       id: obj.id,
       uid: obj.uid,
       description: obj.description,
-      publishers: obj.publishers.map(o => this.afs.doc(`publishers/${o.id}`).ref),
+      publishers: obj.publishers.map(o => this.afs.doc(`${PublishersService.COLLECTION_PATH}/${o.id}`).ref),
       year: obj.year,
-      location: this.afs.doc(`locations/${obj.location.id}`).ref,
-      authors: obj.authors.map(o => this.afs.doc(`authors/${o.id}`).ref),
-      genres: obj.genres.map(o => this.afs.doc(`genres/${o.id}`).ref)
+      location: this.afs.doc(`${LocationsService.COLLECTION_PATH}/${obj.location.id}`).ref,
+      authors: obj.authors.map(o => this.afs.doc(`${AuthorsService.COLLECTION_PATH}/${o.id}`).ref),
+      genres: obj.genres.map(o => this.afs.doc(`${GenresService.COLLECTION_PATH}/${o.id}`).ref)
     };
   }
 
