@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import {IDto, BaseDtoService} from './base-dto.service';
-import {AngularFirestore} from '@angular/fire/firestore';
+import {AngularFirestore, FieldPath} from '@angular/fire/firestore';
 import {AuthService} from './auth.service';
 import {Genre} from '../models/genre';
+import WhereFilterOp = firebase.firestore.WhereFilterOp;
 
 export interface IGenreDTO extends IDto {
   description: string;
@@ -13,12 +14,13 @@ export interface IGenreDTO extends IDto {
 })
 export class GenresService extends BaseDtoService<Genre, IGenreDTO> {
   static COLLECTION_PATH = 'genres';
-  constructor(afs: AngularFirestore, auth: AuthService) {
-    super(afs, auth, GenresService.COLLECTION_PATH);
+  constructor(afs: AngularFirestore) {
+    super(afs, GenresService.COLLECTION_PATH);
   }
 
-  load(limit: number = 10, orderBy: string = 'description') {
-    super.load(limit, orderBy);
+  load(limit: number = 5, orderBy: string = 'description', orderDirection: 'asc' | 'desc' = 'asc',
+       where: [(string | FieldPath), WhereFilterOp, any] = null) {
+    super.load(limit, orderBy, orderDirection, where);
   }
 
   protected toDto(obj: Genre): IGenreDTO {

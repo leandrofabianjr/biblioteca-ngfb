@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {IDto, BaseDtoService} from './base-dto.service';
-import {AngularFirestore, DocumentReference} from '@angular/fire/firestore';
+import {AngularFirestore, DocumentReference, FieldPath} from '@angular/fire/firestore';
 import {AuthService} from './auth.service';
 import {Item} from '../models/item';
 import {IPublisherDTO, PublishersService} from './publishers.service';
@@ -11,6 +11,7 @@ import {Genre} from '../models/genre';
 import {Author} from '../models/author';
 import {ILocationDTO, LocationsService} from './locations.service';
 import {Location} from '../models/location';
+import WhereFilterOp = firebase.firestore.WhereFilterOp;
 
 export interface IItemDTO extends IDto {
   description: string;
@@ -26,12 +27,13 @@ export interface IItemDTO extends IDto {
 })
 export class ItemsService extends BaseDtoService<Item, IItemDTO> {
   static COLLECTION_PATH = 'items';
-  constructor(afs: AngularFirestore, auth: AuthService) {
-    super(afs, auth, ItemsService.COLLECTION_PATH);
+  constructor(afs: AngularFirestore) {
+    super(afs, ItemsService.COLLECTION_PATH);
   }
 
-  load(limit: number = 10, orderBy: string = 'description') {
-    super.load(limit, orderBy);
+  load(limit: number = 5, orderBy: string = 'description', orderDirection: 'asc' | 'desc' = 'asc',
+       where: [(string | FieldPath), WhereFilterOp, any] = null) {
+    super.load(limit, orderBy, orderDirection, where);
   }
 
   protected toDto(obj: Item): IItemDTO {

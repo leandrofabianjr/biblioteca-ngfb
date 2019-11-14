@@ -1,23 +1,56 @@
-import {AngularFirestore, AngularFirestoreCollection, FieldPath, QueryFn} from '@angular/fire/firestore';
+import {AngularFirestore, AngularFirestoreCollection, FieldPath, QueryDocumentSnapshot, QueryFn} from '@angular/fire/firestore';
 import {BehaviorSubject, from, Observable, of} from 'rxjs';
-import {AuthService} from './auth.service';
 import {IModel} from '../models/model.interface';
 import WhereFilterOp = firebase.firestore.WhereFilterOp;
 import {flatMap, map} from 'rxjs/operators';
+import OrderByDirection = firebase.firestore.OrderByDirection;
 
 export interface IDto {
   id: string;
   uid: string;
 }
 
+class PaginationData<T_DTO> {
+  firstDoc: QueryDocumentSnapshot<any>;
+  lastDoc: QueryDocumentSnapshot<any>;
+  limit: number;
+  orderBy: string;
+  orderDirection: OrderByDirection;
+  where: [ string | FieldPath, WhereFilterOp, any];
+
+  constructor(
+    limit: number,
+    orderBy: string,
+    orderDirection: OrderByDirection,
+    where: [(string | FieldPath), firebase.firestore.WhereFilterOp, any]) {
+    this.limit = limit;
+    this.orderBy = orderBy;
+    this.orderDirection = orderDirection;
+    this.where = where;
+  }
+}
+
 export abstract class BaseDtoService<T extends IModel, T_DTO extends IDto> {
   private readonly COLLECTION_PATH;
   private collection: (queryFn?: QueryFn) => AngularFirestoreCollection<T_DTO>;
   private dataSjt: BehaviorSubject<T[]> = new BehaviorSubject<T[]>([]);
+  private pd: PaginationData<T_DTO>;
+  readonly uid: string;
 
-  protected constructor(protected afs: AngularFirestore, private auth: AuthService, collection: string) {
+  private loadQueryFn = (ref) => {
+    const r = ref
+      .where('uid', '==', this.uid)
+      // .limit(this.pd.limit)
+      .orderBy(this.pd.orderBy, this.pd.orderDirection);
+    return this.pd.where ? r.where(this.pd.where[0], this.pd.where[1], this.pd.where[2]) : r;
+  }
+
+  protected constructor(protected afs: AngularFirestore, collection: string) {
     this.COLLECTION_PATH = collection;
     this.collection = (fn?) => afs.collection<T_DTO>(collection, fn);
+    // @ts-ignore
+    this.uid = afs.firestore._credentials.currentUser.uid.toString();
+    if (!this.uid) { throw Error('Usuário não encontrado'); }
   }
 
   get data(): Observable<T[]> {
@@ -27,71 +60,47 @@ export abstract class BaseDtoService<T extends IModel, T_DTO extends IDto> {
   protected abstract toModel(dto: T_DTO): Promise<T>;
   protected abstract toDto(obj: T): T_DTO;
 
-  load(limit = 10, orderBy = 'uid') {
-    this.auth.user.subscribe(u => {
-      if (!u) { return; }
-      this.collection(ref => ref
-        .where('uid', '==', u.uid)
-        .orderBy(orderBy, 'asc')
-      ).get().subscribe(r => {
-        Promise.all(r.docs.map(d => this.toModel({id: d.id, ...d.data()} as T_DTO)))
+  load(limit = 5, orderBy = 'uid', orderDirection: 'asc'|'desc' = 'asc', where: [ string | FieldPath, WhereFilterOp, any] = null) {
+    this.pd = new PaginationData<T_DTO>(limit, orderBy, orderDirection, where);
+    this.collection(this.loadQueryFn).snapshotChanges()
+      .subscribe(res => {
+        if (!res.length) { return; }
+        this.pd.firstDoc = res[0].payload.doc;
+        this.pd.lastDoc = res[res.length - 1].payload.doc;
+        console.log(res.length);
+        Promise.all(res.map(d => this.toModel({id: d.payload.doc.id, ...d.payload.doc.data()} as T_DTO)))
           .then(objs => this.dataSjt.next(objs));
       });
-    }, error => console.error(error));
   }
 
-  findOneWhere(fieldPath: string | FieldPath, opStr: WhereFilterOp, value: any): Observable<T|null> {
-    return this.auth.user.pipe(
-      map(u => {
-        if (!u) { throw Error(); }
-        return u.uid;
-      }),
-      flatMap(uid => uid
-        ? this.collection(ref => ref
-          .where('uid', '==', uid)
-          .where(fieldPath, opStr, value)
-          .limit(1)
-          ).get()
-        : null
-      ),
-      flatMap((ss) => {
-        if (!ss) { return of(null); }
-        const doc = ss.docs[0];
-        return from(this.toModel({id: doc.id, ...doc.data()} as T_DTO));
-      })
-    );
+  loadNext() {
+    this.collection(ref => this.loadQueryFn(ref).startAfter(this.pd.firstDoc)).get().subscribe(res => {
+      if (!res.docs.length) { return; }
+      this.pd.firstDoc = res.docs[0];
+      this.pd.firstDoc = res.docs[res.docs.length - 1];
+      Promise.all(res.docs.map(d => this.toModel({id: d.id, ...d.data()} as T_DTO)))
+        .then(objs => this.dataSjt.next(objs));
+    });
   }
 
   new(obj: T): Observable<T> {
-    return this.auth.user.pipe(
-      map(u => {
-        if (!u) { throw Error(); }
-        return u.uid;
-      }),
-      flatMap(uid => {
-        obj.uid = uid;
-        const dto = this.toDto(obj);
-        delete dto.id;
-        return from(this.collection().add(dto)
-          .then(ref => ref.get())
-          .then(ss => this.toModel({id: ss.id, ...ss.data()} as T_DTO)));
+    obj.uid = this.uid;
+    const dto = this.toDto(obj);
+    delete dto.id;
+    return from(this.collection().add(dto)
+      .then(ref => {
+
+        return ref;
       })
-    );
+      .then(ref => ref.get())
+      .then(ss => this.toModel({id: ss.id, ...ss.data()} as T_DTO)));
   }
 
   update(obj: T): Observable<T> {
-    return this.auth.user.pipe(
-      map(u => {
-        if (!u) { throw Error(); }
-        return u.uid;
-      }),
-      flatMap(uid => {
-        obj.uid = uid;
-        const dto = this.toDto(obj);
-        delete dto.id;
-        return from(this.collection().doc(obj.id).update(dto).then(() => obj));
-      })
-    );
+    obj.uid = this.uid;
+    const dto = this.toDto(obj);
+    delete dto.id;
+    return from(this.collection().doc(obj.id).update(dto).then(() => obj));
   }
 
   delete(id: string): Observable<boolean> {

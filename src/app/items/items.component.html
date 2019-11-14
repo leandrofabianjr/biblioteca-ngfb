@@ -61,7 +61,12 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 
-  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  <mat-paginator
+    [pageIndex]="page"
+    [pageSizeOptions]="[5, 10, 100]"
+    [pageSize]="limit"
+    label
+  ></mat-paginator>
 </div>
 
 <a mat-fab aria-label="Criar novo item" class="btn-new" [routerLink]="'new'">

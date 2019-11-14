@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import {AngularFirestore} from '@angular/fire/firestore';
-import {AuthService} from './auth.service';
+import {AngularFirestore, FieldPath} from '@angular/fire/firestore';
 import {IDto, BaseDtoService} from './base-dto.service';
 import {Author} from '../models/author';
+import WhereFilterOp = firebase.firestore.WhereFilterOp;
 
 export interface IAuthorDTO extends IDto {
   name: string;
@@ -13,12 +13,13 @@ export interface IAuthorDTO extends IDto {
 })
 export class AuthorsService extends BaseDtoService<Author, IAuthorDTO> {
   static COLLECTION_PATH = 'authors';
-  constructor(afs: AngularFirestore, auth: AuthService) {
-    super(afs, auth, AuthorsService.COLLECTION_PATH);
+  constructor(afs: AngularFirestore) {
+    super(afs, AuthorsService.COLLECTION_PATH);
   }
 
-  load(limit: number = 10, orderBy: string = 'name') {
-    super.load(limit, orderBy);
+  load(limit: number = 10, orderBy: string = 'name', orderDirection: 'desc' | 'asc' = 'asc',
+       where: [(string | FieldPath), WhereFilterOp, any] = null) {
+    super.load(limit, orderBy, orderDirection, where);
   }
 
   protected toDto(dto: Author): IAuthorDTO {

@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ItemsService} from '../services/items.service';
 import {Item} from '../models/item';
-import {MatDialog, MatPaginator, MatTableDataSource} from '@angular/material';
+import {MatDialog, MatPaginator, MatTableDataSource, PageEvent} from '@angular/material';
 import {Author} from '../models/author';
 import {AuthorsNewComponent} from '../authors/authors-new/authors-new.component';
 import {Genre} from '../models/genre';
@@ -11,6 +11,7 @@ import {LocationsNewComponent} from '../locations/locations-new/locations-new.co
 import {Publisher} from '../models/publisher';
 import {PublishersNewComponent} from '../publishers/publishers-new/publishers-new.component';
 import {DialogConfirmationComponent} from '../dialog-confirmation/dialog-confirmation.component';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-items',
@@ -18,20 +19,37 @@ import {DialogConfirmationComponent} from '../dialog-confirmation/dialog-confirm
   styleUrls: ['./items.component.scss']
 })
 export class ItemsComponent implements OnInit {
-  displayedColumns: string[] = ['descricao', 'autores', 'generos', 'ano', 'editora', 'local', 'acoes',];
+  displayedColumns: string[] = ['descricao', 'autores', 'generos', 'ano', 'editora', 'local', 'acoes', ];
   items = new MatTableDataSource<Item>();
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
+  page: number;
+  limit: number;
+  sort: string;
+  dir: 'asc'|'desc';
+
   constructor(
     private itmSrv: ItemsService,
-    public dialog: MatDialog
-  ) { }
+    public dialog: MatDialog,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
+    this.route.queryParams.subscribe(params => {
+      this.page = +params.page || 0;
+      this.limit = +params.limit || 5;
+      this.sort = params.sort || 'description';
+      this.dir = +params.sort ? 'desc' : 'asc';
+    });
+  }
 
   ngOnInit() {
-    this.itmSrv.load();
-    this.itmSrv.data.subscribe(itms => this.items.data = itms);
+    this.itmSrv.data.subscribe(itms => {
+      this.items.data = itms;
+    });
+    this.paginator.page.subscribe(this.changePage);
     this.items.paginator = this.paginator;
+    this.itmSrv.load(this.limit, this.sort, this.dir);
   }
 
   editAuthor(author: Author) {
@@ -62,5 +80,27 @@ export class ItemsComponent implements OnInit {
           );
       }
     });
+  }
+
+  changePage(p: PageEvent) {
+    this.page = p.pageIndex;
+    this.limit = p.pageSize;
+    this.navigate();
+  }
+
+  private navigate() {
+    const queryParams: any = {};
+
+    if (this.page) {
+      queryParams.page = this.page ;
+    }
+    if (this.limit) {
+      queryParams.size = this.limit;
+    }
+    if (this.sort) {
+      queryParams.sort = this.sort;
+    }
+
+    this.router.navigate([ '/items' ], { queryParams });
   }
 }
