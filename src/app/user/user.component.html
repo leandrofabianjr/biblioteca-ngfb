@@ -3,4 +3,9 @@
   <p>{{ user.email }}</p>
   <p>{{ user.uid }}</p>
   <img [src]="user.photoUrl"  alt="">
+  <p>Items: {{ stats?.items?.count }}</p>
+  <p>Autores: {{ stats?.authors?.count }}</p>
+  <p>Gêneros: {{ stats?.genres?.count }}</p>
+  <p>Editoras: {{ stats?.publishers?.count }}</p>
+  <p>Locais: {{ stats?.locations?.count }}</p>
 </div>

@@ -1,5 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthService} from '../services/auth.service';
+import {CollectionStats, StatsService} from '../services/stats.service';
+import {ItemsService} from '../services/items.service';
+import {AuthorsService} from '../services/authors.service';
+import {GenresService} from '../services/genres.service';
+import {LocationsService} from '../services/locations.service';
+import {PublishersService} from '../services/publishers.service';
+import {CollectionType} from '../services/base-dto.service';
+import {AngularFirestore} from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-user',
@@ -8,9 +16,21 @@ import {AuthService} from '../services/auth.service';
 })
 export class UserComponent implements OnInit {
 
-  constructor(public auth: AuthService) { }
+  stats = {
+    items: {} as CollectionStats,
+    authors: {} as CollectionStats,
+    genres: {} as CollectionStats,
+    locations: {} as CollectionStats,
+    publishers: {} as CollectionStats,
+  };
 
-  ngOnInit() {
+  constructor(public afs: AngularFirestore, public auth: AuthService) {
+    new StatsService(afs, CollectionType.Items).get().subscribe(s => this.stats.items = s);
+    new StatsService(afs, CollectionType.Authors).get().subscribe(s => this.stats.authors = s);
+    new StatsService(afs, CollectionType.Genres).get().subscribe(s => this.stats.genres = s);
+    new StatsService(afs, CollectionType.Locations).get().subscribe(s => this.stats.locations = s);
+    new StatsService(afs, CollectionType.Publishers).get().subscribe(s => this.stats.publishers = s);
   }
 
+  ngOnInit() { }
 }
