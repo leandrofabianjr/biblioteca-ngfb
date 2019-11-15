@@ -12,6 +12,7 @@ import {Publisher} from '../models/publisher';
 import {PublishersNewComponent} from '../publishers/publishers-new/publishers-new.component';
 import {DialogConfirmationComponent} from '../dialog-confirmation/dialog-confirmation.component';
 import {ActivatedRoute, Router} from '@angular/router';
+import {CollectionStats} from '../services/stats.service';
 
 @Component({
   selector: 'app-items',
@@ -19,15 +20,18 @@ import {ActivatedRoute, Router} from '@angular/router';
   styleUrls: ['./items.component.scss']
 })
 export class ItemsComponent implements OnInit {
-  displayedColumns: string[] = ['descricao', 'autores', 'generos', 'ano', 'editora', 'local', 'acoes', ];
+  loading = true;
+  displayedColumns: string[] = ['Descrição', 'Autores', 'Gêneros', 'Ano', 'Editora', 'Local'];
+  displayedColumnsAttrs: string[] = ['description', 'authors', 'genres', 'year', 'editora', 'location'];
   items = new MatTableDataSource<Item>();
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
-  page: number;
+  page = 0;
   limit: number;
   sort: string;
   dir: 'asc'|'desc';
+  itemsStats: CollectionStats;
 
   constructor(
     private itmSrv: ItemsService,
@@ -36,9 +40,8 @@ export class ItemsComponent implements OnInit {
     private router: Router
   ) {
     this.route.queryParams.subscribe(params => {
-      this.page = +params.page || 0;
       this.limit = +params.limit || 5;
-      this.sort = params.sort || 'description';
+      this.sort = params.sort || this.displayedColumnsAttrs[0];
       this.dir = +params.sort ? 'desc' : 'asc';
     });
   }
@@ -46,10 +49,10 @@ export class ItemsComponent implements OnInit {
   ngOnInit() {
     this.itmSrv.data.subscribe(itms => {
       this.items.data = itms;
+      this.loading = false;
     });
-    this.paginator.page.subscribe(this.changePage);
-    this.items.paginator = this.paginator;
     this.itmSrv.load(this.limit, this.sort, this.dir);
+    this.itmSrv.stats.subscribe(s => this.itemsStats = s);
   }
 
   editAuthor(author: Author) {
@@ -83,7 +86,15 @@ export class ItemsComponent implements OnInit {
   }
 
   changePage(p: PageEvent) {
-    this.page = p.pageIndex;
+    if (p.pageIndex !== this.page) {
+      this.loading = true;
+      this.page = p.pageIndex;
+      if (p.pageIndex < this.page) {
+        this.itmSrv.loadPrev();
+      } else {
+        this.itmSrv.loadNext();
+      }
+    }
     this.limit = p.pageSize;
     this.navigate();
   }
@@ -91,9 +102,6 @@ export class ItemsComponent implements OnInit {
   private navigate() {
     const queryParams: any = {};
 
-    if (this.page) {
-      queryParams.page = this.page ;
-    }
     if (this.limit) {
       queryParams.size = this.limit;
     }
@@ -102,5 +110,9 @@ export class ItemsComponent implements OnInit {
     }
 
     this.router.navigate([ '/items' ], { queryParams });
+  }
+
+  search(term: string) {
+    // this.itmSrv.load(this.limit, this.sort, this.dir, [this.sort, 'array-contains', term]);
   }
 }
