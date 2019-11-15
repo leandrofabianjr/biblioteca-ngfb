@@ -21,7 +21,7 @@ import {
   MatButtonModule,
   MatCardModule, MatChipsModule, MatDialogModule, MatFormFieldModule,
   MatIconModule, MatInputModule,
-  MatListModule, MatPaginatorIntl, MatPaginatorModule, MatProgressSpinnerModule,
+  MatListModule, MatPaginatorIntl, MatPaginatorModule, MatProgressSpinnerModule, MatSelectModule,
   MatSidenavModule,
   MatTableModule,
   MatToolbarModule
@@ -81,7 +81,8 @@ import { DialogConfirmationComponent } from './dialog-confirmation/dialog-confir
     MatFormFieldModule,
     MatInputModule,
     NgSelectModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSelectModule
   ],
   providers: [{ provide: MatPaginatorIntl, useClass: MatPaginatorIntlPtbr}],
   bootstrap: [AppComponent],
