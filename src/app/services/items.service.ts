@@ -1,7 +1,6 @@
-import { Injectable } from '@angular/core';
-import {IDto, BaseDtoService} from './base-dto.service';
+import {Injectable} from '@angular/core';
+import {BaseDtoService, CollectionType, IDto} from './base-dto.service';
 import {AngularFirestore, DocumentReference, FieldPath} from '@angular/fire/firestore';
-import {AuthService} from './auth.service';
 import {Item} from '../models/item';
 import {IPublisherDTO, PublishersService} from './publishers.service';
 import {Publisher} from '../models/publisher';
@@ -26,9 +25,8 @@ export interface IItemDTO extends IDto {
   providedIn: 'root'
 })
 export class ItemsService extends BaseDtoService<Item, IItemDTO> {
-  static COLLECTION_PATH = 'items';
   constructor(afs: AngularFirestore) {
-    super(afs, ItemsService.COLLECTION_PATH);
+    super(afs, CollectionType.Items);
   }
 
   load(limit: number = 5, orderBy: string = 'description', orderDirection: 'asc' | 'desc' = 'asc',
@@ -41,11 +39,11 @@ export class ItemsService extends BaseDtoService<Item, IItemDTO> {
       id: obj.id,
       uid: obj.uid,
       description: obj.description,
-      publishers: obj.publishers.map(o => this.afs.doc(`${PublishersService.COLLECTION_PATH}/${o.id}`).ref),
+      publishers: obj.publishers.map(o => this.afs.doc(`${CollectionType.Publishers}/${o.id}`).ref),
       year: obj.year,
-      location: this.afs.doc(`${LocationsService.COLLECTION_PATH}/${obj.location.id}`).ref,
-      authors: obj.authors.map(o => this.afs.doc(`${AuthorsService.COLLECTION_PATH}/${o.id}`).ref),
-      genres: obj.genres.map(o => this.afs.doc(`${GenresService.COLLECTION_PATH}/${o.id}`).ref)
+      location: this.afs.doc(`${CollectionType.Locations}/${obj.location.id}`).ref,
+      authors: obj.authors.map(o => this.afs.doc(`${CollectionType.Authors}/${o.id}`).ref),
+      genres: obj.genres.map(o => this.afs.doc(`${CollectionType.Genres}/${o.id}`).ref)
     };
   }
 

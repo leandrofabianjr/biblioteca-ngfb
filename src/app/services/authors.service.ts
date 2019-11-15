@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {AngularFirestore, FieldPath} from '@angular/fire/firestore';
-import {IDto, BaseDtoService} from './base-dto.service';
+import {BaseDtoService, CollectionType, IDto} from './base-dto.service';
 import {Author} from '../models/author';
 import WhereFilterOp = firebase.firestore.WhereFilterOp;
 
@@ -12,9 +12,8 @@ export interface IAuthorDTO extends IDto {
   providedIn: 'root'
 })
 export class AuthorsService extends BaseDtoService<Author, IAuthorDTO> {
-  static COLLECTION_PATH = 'authors';
   constructor(afs: AngularFirestore) {
-    super(afs, AuthorsService.COLLECTION_PATH);
+    super(afs, CollectionType.Authors);
   }
 
   load(limit: number = 10, orderBy: string = 'name', orderDirection: 'desc' | 'asc' = 'asc',

@@ -1,7 +1,6 @@
-import { Injectable } from '@angular/core';
-import {IDto, BaseDtoService} from './base-dto.service';
+import {Injectable} from '@angular/core';
+import {BaseDtoService, CollectionType, IDto} from './base-dto.service';
 import {AngularFirestore, FieldPath} from '@angular/fire/firestore';
-import {AuthService} from './auth.service';
 import {Genre} from '../models/genre';
 import WhereFilterOp = firebase.firestore.WhereFilterOp;
 
@@ -13,9 +12,8 @@ export interface IGenreDTO extends IDto {
   providedIn: 'root'
 })
 export class GenresService extends BaseDtoService<Genre, IGenreDTO> {
-  static COLLECTION_PATH = 'genres';
   constructor(afs: AngularFirestore) {
-    super(afs, GenresService.COLLECTION_PATH);
+    super(afs, CollectionType.Genres);
   }
 
   load(limit: number = 5, orderBy: string = 'description', orderDirection: 'asc' | 'desc' = 'asc',
