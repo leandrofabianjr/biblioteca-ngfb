@@ -7,7 +7,7 @@ import {Location} from '../../models/location';
 @Component({
   selector: 'app-locations-new',
   templateUrl: './locations-new.component.html',
-  styleUrls: ['./locations-new.component.sass']
+  styleUrls: ['./locations-new.component.scss']
 })
 export class LocationsNewComponent implements OnInit {
 
