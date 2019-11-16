@@ -7,7 +7,7 @@ import {Genre} from '../../models/genre';
 @Component({
   selector: 'app-genres-new',
   templateUrl: './genres-new.component.html',
-  styleUrls: ['./genres-new.component.sass']
+  styleUrls: ['./genres-new.component.scss']
 })
 export class GenresNewComponent implements OnInit {
 
