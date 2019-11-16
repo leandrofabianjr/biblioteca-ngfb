@@ -1,0 +1,37 @@
+.header-cel {
+  display: flex;
+  align-items: center;
+}
+
+.label {
+  padding: 8px 0;
+}
+
+.search-icon {
+  padding-right: 4px;
+  vertical-align: middle;
+  cursor: pointer;
+  display: none;
+}
+
+.search-icon:hover {
+  color: #ff4081;
+}
+
+.input-search-container {
+  padding-right: 8px;
+}
+
+.header-cel:hover {
+  .search-icon {
+    display: block;
+  }
+}
+
+.close-icon {
+  cursor: pointer;
+}
+
+.search-icon:hover {
+  color: #ff4081;
+}
