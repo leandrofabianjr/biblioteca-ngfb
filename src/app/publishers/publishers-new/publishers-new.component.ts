@@ -7,7 +7,7 @@ import {Publisher} from '../../models/publisher';
 @Component({
   selector: 'app-publishers-new',
   templateUrl: './publishers-new.component.html',
-  styleUrls: ['./publishers-new.component.sass']
+  styleUrls: ['./publishers-new.component.scss']
 })
 export class PublishersNewComponent implements OnInit {
 
