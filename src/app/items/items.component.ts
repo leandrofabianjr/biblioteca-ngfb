@@ -22,7 +22,8 @@ import {CollectionStats} from '../services/stats.service';
 export class ItemsComponent implements OnInit {
   loading = true;
   displayedColumns: string[] = ['Descrição', 'Autores', 'Gêneros', 'Ano', 'Editora', 'Local'];
-  displayedColumnsAttrs: string[] = ['description', 'authors', 'genres', 'year', 'editora', 'location'];
+  displayedColumnsAttrs: string[] = ['description', 'authors', 'genres', 'year', 'publisher', 'location'];
+  searchTerms: string[] = new Array(this.displayedColumnsAttrs.length);
   items = new MatTableDataSource<Item>();
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -112,7 +113,12 @@ export class ItemsComponent implements OnInit {
     this.router.navigate([ '/items' ], { queryParams });
   }
 
-  search(term: string) {
-    // this.itmSrv.load(this.limit, this.sort, this.dir, [this.sort, 'array-contains', term]);
+  search(column: string, term: string) {
+    this.searchTerms[this.displayedColumnsAttrs.indexOf(column)] = term;
+    this.searchTerms.map((t, i) => {
+      if (t) {
+        // this.itmSrv.load(this.limit, this.sort, this.dir, [t, 'array-contains', term]);
+      }
+    });
   }
 }
