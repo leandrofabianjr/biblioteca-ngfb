@@ -1,11 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthService} from '../services/auth.service';
 import {CollectionStats, StatsService} from '../services/stats.service';
-import {ItemsService} from '../services/items.service';
-import {AuthorsService} from '../services/authors.service';
-import {GenresService} from '../services/genres.service';
-import {LocationsService} from '../services/locations.service';
-import {PublishersService} from '../services/publishers.service';
 import {CollectionType} from '../services/base-dto.service';
 import {AngularFirestore} from '@angular/fire/firestore';
 
