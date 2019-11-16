@@ -22,7 +22,7 @@ import {
   MatCardModule, MatChipsModule, MatDialogModule, MatFormFieldModule,
   MatIconModule, MatInputModule,
   MatListModule, MatPaginatorIntl, MatPaginatorModule, MatProgressSpinnerModule, MatSelectModule,
-  MatSidenavModule,
+  MatSidenavModule, MatSortModule,
   MatTableModule,
   MatToolbarModule
 } from '@angular/material';
@@ -37,6 +37,7 @@ import { GenresNewComponent } from './genres/genres-new/genres-new.component';
 import { LocationsNewComponent } from './locations/locations-new/locations-new.component';
 import { PublishersNewComponent } from './publishers/publishers-new/publishers-new.component';
 import { DialogConfirmationComponent } from './dialog-confirmation/dialog-confirmation.component';
+import { TabColumnSearchComponent } from './tab-column-search/tab-column-search.component';
 
 
 @NgModule({
@@ -57,7 +58,8 @@ import { DialogConfirmationComponent } from './dialog-confirmation/dialog-confir
     GenresNewComponent,
     LocationsNewComponent,
     PublishersNewComponent,
-    DialogConfirmationComponent
+    DialogConfirmationComponent,
+    TabColumnSearchComponent
   ],
   imports: [
     BrowserModule,
@@ -82,7 +84,8 @@ import { DialogConfirmationComponent } from './dialog-confirmation/dialog-confir
     MatInputModule,
     NgSelectModule,
     MatDialogModule,
-    MatSelectModule
+    MatSelectModule,
+    MatSortModule
   ],
   providers: [{ provide: MatPaginatorIntl, useClass: MatPaginatorIntlPtbr}],
   bootstrap: [AppComponent],
