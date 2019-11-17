@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ItemsService} from '../services/items.service';
 import {Item} from '../models/item';
-import {MatDialog, MatPaginator, MatTableDataSource, PageEvent} from '@angular/material';
+import {MatDialog, MatPaginator, MatSort, MatTableDataSource, PageEvent, Sort} from '@angular/material';
 import {Author} from '../models/author';
 import {AuthorsNewComponent} from '../authors/authors-new/authors-new.component';
 import {Genre} from '../models/genre';
@@ -19,25 +19,27 @@ import {DialogConfirmationComponent} from '../dialog-confirmation/dialog-confirm
 })
 export class ItemsComponent implements OnInit {
   loading = true;
-  displayedColumns: string[] = ['Descrição', 'Autores', 'Gêneros', 'Ano', 'Editora', 'Local'];
-  displayedColumnsAttrs: string[] = ['description', 'authors', 'genres', 'year', 'publisher', 'location'];
-  searchTerms: string[] = new Array(this.displayedColumnsAttrs.length);
-  items = new MatTableDataSource<Item>();
+  displayedColumns: string[] = ['description', 'authors', 'genres', 'year', 'publishers', 'location'];
+  searchTerms: string[] = new Array(this.displayedColumns.length);
+  itemsSource = new MatTableDataSource<Item>();
+  private items: Item[];
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) matSort: MatSort;
 
   constructor(
     private itmSrv: ItemsService,
     public dialog: MatDialog
-  ) {
-  }
+  ) { }
 
   ngOnInit() {
     this.itmSrv.data.subscribe(itms => {
-      this.items.data = itms;
+      this.items = itms;
+      this.itemsSource.data = itms;
       this.loading = false;
     });
-    this.items.paginator = this.paginator;
+    this.itemsSource.paginator = this.paginator;
+    this.itemsSource.sort = this.matSort;
   }
 
   editAuthor(author: Author) {
@@ -71,11 +73,53 @@ export class ItemsComponent implements OnInit {
   }
 
   search(column: string, term: string) {
-    this.searchTerms[this.displayedColumnsAttrs.indexOf(column)] = term;
+    this.searchTerms[this.displayedColumns.indexOf(column)] = term;
+    let filteredItems = this.items.slice();
     this.searchTerms.map((t, i) => {
       if (t) {
-        // TODO
+        t = t.toLowerCase();
+        switch (this.displayedColumns[i]) {
+          case 'description':
+            filteredItems = filteredItems.filter(itm => itm.description.toLowerCase().includes(t));
+            break;
+          case 'authors':
+            filteredItems = filteredItems.filter(itm => itm.authors.find(a => a.name.toLowerCase().includes(t)));
+            break;
+          case 'genres':
+            filteredItems = filteredItems.filter(itm => itm.genres.find(g => g.description.toLowerCase().includes(t)));
+            break;
+          case 'year':
+            filteredItems = filteredItems.filter(itm => itm.year.toString().includes(t));
+            break;
+          case 'publishers':
+            filteredItems = filteredItems.filter(itm => itm.publishers.find(p => p.name.toLowerCase().includes(t)));
+            break;
+          case 'location':
+            filteredItems = filteredItems.filter(itm => itm.location.description.toLowerCase().includes(t));
+            break;
+        }
       }
     });
+    this.itemsSource.data = filteredItems;
+  }
+
+  sort(sort: Sort) {
+    if (!sort.active || sort.direction === '') {
+      this.itemsSource.data = this.items;
+      return;
+    }
+    const sortFn = (a, b) => (a < b ? -1 : 1) * (sort.direction === 'asc' ? 1 : -1);
+    switch (sort.active) {
+      case 'description':
+        this.items.sort((a, b) => sortFn(a.description, b.description));
+        break;
+      case 'year':
+        this.items.sort((a, b) => sortFn(a.year, b.year));
+        break;
+      case 'location':
+        this.items.sort((a, b) => sortFn(a.location.description, b.location.description));
+        break;
+      default: return;
+    }
   }
 }
