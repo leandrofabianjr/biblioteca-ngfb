@@ -14,7 +14,7 @@ import {LoggedComponent} from './logged/logged.component';
 
 
 const routes: Routes = [
-  { path: '', redirectTo: 'me', pathMatch: 'full' },
+  { path: '', redirectTo: 'u/me', pathMatch: 'full' },
   { path: 'login', component: LoginComponent, ...canActivate(() => redirectLoggedInTo(['me'])) },
 
   { path: 'u', component: LoggedComponent, ...canActivate(() => redirectUnauthorizedTo(['login'])), children: [
