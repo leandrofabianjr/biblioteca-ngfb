@@ -1,3 +1,32 @@
-<ul>
-  <li *ngFor="let a of authors | async">{{ a.id + ' - ' + a.name }}</li>
-</ul>
+<h2>Autores</h2>
+
+<div class="table-container mat-elevation-z4">
+  <table mat-table matSort [dataSource]="authorsSource">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>
+        <app-tab-column-search header-label="Nome" sort="true" (search)="search('name', $event)"></app-tab-column-search>
+      </th>
+      <td mat-cell *matCellDef="let author"> {{author.name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef> Ações </th>
+      <td mat-cell *matCellDef="let author">
+        <div class="action-btns">
+          <button mat-icon-button color="primary" (click)="edit(author)"><mat-icon>edit</mat-icon></button>
+          <button mat-icon-button color="primary" (click)="remove(author)"><mat-icon>delete</mat-icon></button>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns.concat('actions')"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns.concat('actions');"></tr>
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 100]" label></mat-paginator>
+
+  <div *ngIf="loading" class="loading">
+    <p>Carregando seus autores...</p>
+    <mat-spinner class="spinner" diameter="50" mode="indeterminate"></mat-spinner>
+  </div>
+</div>

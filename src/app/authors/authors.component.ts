@@ -1,7 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {AuthorsService} from '../services/authors.service';
-import {Observable} from 'rxjs';
 import {Author} from '../models/author';
+import {MatDialog, MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import {ItemsService} from '../services/items.service';
+import {first} from 'rxjs/operators';
+import {DialogInfoComponent} from '../dialog-info/dialog-info.component';
+import {DialogConfirmationComponent} from '../dialog-confirmation/dialog-confirmation.component';
+import {AuthorsNewComponent} from './authors-new/authors-new.component';
 
 @Component({
   selector: 'app-authors',
@@ -9,12 +14,53 @@ import {Author} from '../models/author';
   styleUrls: ['./authors.component.scss']
 })
 export class AuthorsComponent implements OnInit {
-  authors: Observable<Author[]>;
+  loading = true;
+  displayedColumns: string[] = ['name'];
+  authorsSource = new MatTableDataSource<Author>();
+  private authors: Author[];
 
-  constructor(private autSrv: AuthorsService) {
-    this.authors = autSrv.data;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
+
+  constructor(private autSrv: AuthorsService, public dialog: MatDialog, private itmSrv: ItemsService) { }
+
+  ngOnInit() {
+    this.autSrv.data.subscribe(auts => {
+      this.authors = auts;
+      this.authorsSource.data = auts;
+      this.loading = false;
+    });
+    this.authorsSource.paginator = this.paginator;
+    this.authorsSource.sort = this.sort;
   }
 
-  ngOnInit() { }
+  search(column: string, term: string) {
+    this.authorsSource.data = !term
+      ? this.authors
+      : this.authors.filter(l => l.name.toLowerCase().includes(term.toLowerCase()));
+  }
 
+  remove(author: Author) {
+    this.itmSrv.data.pipe(first()).subscribe(itms => {
+      if (itms.find(i => i.authors.find(a => a.id === author.id) !== undefined)) {
+        this.dialog.open(DialogInfoComponent,
+          { data: {title: 'Desculpe...', message: 'Não é possível remover este autor. Há itens relacionados a ele.'}});
+      } else {
+        this.dialog.open(DialogConfirmationComponent).afterClosed()
+          .subscribe((res: boolean) => {
+            if (res) {
+              this.autSrv.delete(author.id)
+                .subscribe(
+                  itm => null,
+                  err => console.error('Erro ao remover item')
+                );
+            }
+          });
+      }
+    });
+  }
+
+  edit(author: Author) {
+    this.dialog.open(AuthorsNewComponent, { data: author });
+  }
 }
