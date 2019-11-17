@@ -99,7 +99,7 @@ export abstract class BaseDtoService<T extends IModel, T_DTO extends IDto> {
   delete(id: string): Observable<boolean> {
     return from(this.collection().doc(id).delete()
       .then(() => this.stats.pipe(first()).pipe(map(stats => {
-        ++stats.count;
+        --stats.count;
         console.log(stats);
         return stats;
       })).toPromise())
