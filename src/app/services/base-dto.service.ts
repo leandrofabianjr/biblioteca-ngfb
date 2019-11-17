@@ -1,15 +1,8 @@
-import {
-  AngularFirestore,
-  AngularFirestoreCollection,
-  DocumentSnapshot,
-  FieldPath,
-  QueryDocumentSnapshot,
-  QueryFn
-} from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreCollection, FieldPath, QueryDocumentSnapshot, QueryFn} from '@angular/fire/firestore';
 import {BehaviorSubject, from, Observable, of} from 'rxjs';
 import {IModel} from '../models/model.interface';
 import WhereFilterOp = firebase.firestore.WhereFilterOp;
-import {first, flatMap, map, tap} from 'rxjs/operators';
+import {first, map} from 'rxjs/operators';
 import OrderByDirection = firebase.firestore.OrderByDirection;
 import {CollectionStats, StatsService} from './stats.service';
 
@@ -53,7 +46,9 @@ export abstract class BaseDtoService<T extends IModel, T_DTO extends IDto> {
   private pd: PaginationData<T_DTO>;
   private statsSrv: StatsService;
   readonly uid: string;
-  public stats: Observable<CollectionStats>;
+  stats: Observable<CollectionStats>;
+
+  private collectionData: T[] = [];
 
   private loadQueryFn = (ref) => {
     const r = ref
@@ -66,9 +61,11 @@ export abstract class BaseDtoService<T extends IModel, T_DTO extends IDto> {
   protected constructor(protected afs: AngularFirestore, collectionType: CollectionType) {
     this.collectionType = collectionType;
     this.collection = (fn?) => afs.collection<T_DTO>(collectionType, fn);
+
     // @ts-ignore
     this.uid = afs.firestore._credentials.currentUser.uid.toString();
     if (!this.uid) { throw Error('Usuário não encontrado'); }
+
     this.statsSrv = new StatsService(afs, this.collectionType);
     this.stats = this.statsSrv.get();
   }
@@ -77,39 +74,29 @@ export abstract class BaseDtoService<T extends IModel, T_DTO extends IDto> {
     return this.dataSjt.asObservable();
   }
 
-  protected abstract toModel(dto: T_DTO): Promise<T>;
+  protected abstract toModel(dto: T_DTO): T;
   protected abstract toDto(obj: T): T_DTO;
 
-  load(limit = 5, orderBy = 'uid', orderDirection: 'asc'|'desc' = 'asc', where: [ string | FieldPath, WhereFilterOp, any] = null) {
-    this.pd = new PaginationData<T_DTO>(limit, orderBy, orderDirection, where);
-    this.collection(this.loadQueryFn).snapshotChanges()
-      .subscribe(res => {
-        if (!res.length) { return; }
-        this.pd.firstDoc = res[0].payload.doc;
-        this.pd.lastDoc = res[res.length - 1].payload.doc;
-        Promise.all(res.map(d => this.toModel({id: d.payload.doc.id, ...d.payload.doc.data()} as T_DTO)))
-          .then(objs => this.dataSjt.next(objs));
+  loadData(): Observable<void> {
+    return this.collection(ref => ref.
+      where('uid', '==', this.uid)
+    ).stateChanges().pipe(map(actions => {
+      actions.map(a => {
+        const obj = this.toModel({id: a.payload.doc.id, ...a.payload.doc.data()} as T_DTO);
+        switch (a.type) {
+          case 'added':
+            this.collectionData.splice(a.payload.newIndex, 0, obj);
+            break;
+          case 'modified':
+            this.collectionData[a.payload.newIndex] = obj;
+            break;
+          case 'removed':
+            this.collectionData.splice(a.payload.oldIndex, 1);
+            break;
+        }
       });
-  }
-
-  loadNext() {
-    this.collection(ref => this.loadQueryFn(ref).startAfter(this.pd.firstDoc)).get().subscribe(res => {
-      if (!res.docs.length) { return; }
-      this.pd.firstDoc = res.docs[0];
-      this.pd.firstDoc = res.docs[res.docs.length - 1];
-      Promise.all(res.docs.map(d => this.toModel({id: d.id, ...d.data()} as T_DTO)))
-        .then(objs => this.dataSjt.next(objs));
-    });
-  }
-
-  loadPrev() {
-    this.collection(ref => this.loadQueryFn(ref).endBefore(this.pd.firstDoc)).get().subscribe(res => {
-      if (!res.docs.length) { return; }
-      this.pd.firstDoc = res.docs[0];
-      this.pd.firstDoc = res.docs[res.docs.length - 1];
-      Promise.all(res.docs.map(d => this.toModel({id: d.id, ...d.data()} as T_DTO)))
-        .then(objs => this.dataSjt.next(objs));
-    });
+      this.dataSjt.next(this.collectionData);
+    }));
   }
 
   new(obj: T): Observable<T> {
@@ -121,12 +108,12 @@ export abstract class BaseDtoService<T extends IModel, T_DTO extends IDto> {
       .then(ss =>
         this.stats.pipe(first()).pipe(map(stats => {
           ++stats.count;
-          console.log(stats);
-          return [ss, stats];
+          const newObj = this.toModel({id: ss.id, ...ss.data()} as T_DTO);
+          return [newObj, stats];
         })).toPromise()
       )
-      .then(([ss , stats]: [DocumentSnapshot<T_DTO>, CollectionStats]) => Promise.all([
-        this.toModel({id: ss.id, ...ss.data()} as T_DTO),
+      .then(([newObj , stats]: [T, CollectionStats]) => Promise.all([
+        newObj,
         this.statsSrv.set(this.collectionType, stats).toPromise()
           .catch(err => console.error('Erro ao atualizar stats', err))
       ]))
@@ -158,12 +145,7 @@ export abstract class BaseDtoService<T extends IModel, T_DTO extends IDto> {
       : this.new(obj);
   }
 
-  get(id: string): Observable<T> {
-    return from(this.collection().doc(id).get().pipe(
-      flatMap((ss) => {
-        if (!ss) { return of(null); }
-        return from(this.toModel({id: ss.id, ...ss.data()} as T_DTO));
-      })
-    ));
+  get(id: string): T {
+    return this.collectionData.find(obj => obj.id === id);
   }
 }
