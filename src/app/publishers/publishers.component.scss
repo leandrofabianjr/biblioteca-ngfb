@@ -1,0 +1,31 @@
+.table-container {
+  position: relative;
+}
+
+table {
+  width: 100%;
+
+  td {
+    padding: 2px 8px !important;
+    text-align: center;
+  }
+}
+
+.action-btns {
+  display: flex;
+}
+
+.loading {
+  background-color: rgba(255, 255, 255, .9);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 50px;
+}
