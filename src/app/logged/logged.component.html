@@ -1,0 +1,30 @@
+<div *ngIf="loading" class="loading">
+  <p>Carregando seus dados...</p>
+  <mat-spinner class="spinner" diameter="50" mode="indeterminate"></mat-spinner>
+</div>
+
+<div *ngIf="!loading" class="screen-container" [class.is-mobile]="mobileQuery.matches">
+  <mat-toolbar color="primary" class="screen-toolbar">
+    <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
+    <h1 class="app-name">Biblioteca</h1>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches">
+      <mat-nav-list class="nav-list">
+        <a mat-list-item [routerLink]="['me']" (click)="snav.toggle()">Meus dados</a>
+        <a mat-list-item [routerLink]="['items']" (click)="snav.toggle()">Itens</a>
+        <a mat-list-item [routerLink]="['genres']" (click)="snav.toggle()">Gêneros</a>
+        <a mat-list-item [routerLink]="['authors']" (click)="snav.toggle()">Autores</a>
+        <a mat-list-item [routerLink]="['publishers']" (click)="snav.toggle()">Editoras</a>
+        <a mat-list-item [routerLink]="['locations']" (click)="snav.toggle()">Locais</a>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <div class="container">
+        <router-outlet></router-outlet>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
