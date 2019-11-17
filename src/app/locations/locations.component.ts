@@ -1,7 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import {Observable} from 'rxjs';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {LocationsService} from '../services/locations.service';
 import {Location} from '../models/location';
+import {MatDialog, MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import {DialogConfirmationComponent} from '../dialog-confirmation/dialog-confirmation.component';
+import {ItemsService} from '../services/items.service';
+import {DialogInfoComponent} from '../dialog-info/dialog-info.component';
+import {first} from 'rxjs/operators';
+import {LocationsNewComponent} from './locations-new/locations-new.component';
 
 @Component({
   selector: 'app-locations',
@@ -9,12 +14,53 @@ import {Location} from '../models/location';
   styleUrls: ['./locations.component.scss']
 })
 export class LocationsComponent implements OnInit {
-  locations: Observable<Location[]>;
+  loading = true;
+  displayedColumns: string[] = ['description'];
+  locationsSource = new MatTableDataSource<Location>();
+  private locations: Location[];
 
-  constructor(private locSrv: LocationsService) {
-    this.locations = locSrv.data;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
+
+  constructor(private locSrv: LocationsService, public dialog: MatDialog, private itmSrv: ItemsService) { }
+
+  ngOnInit() {
+    this.locSrv.data.subscribe(locs => {
+      this.locations = locs;
+      this.locationsSource.data = locs;
+      this.loading = false;
+    });
+    this.locationsSource.paginator = this.paginator;
+    this.locationsSource.sort = this.sort;
   }
 
-  ngOnInit() { }
+  search(column: string, term: string) {
+    this.locationsSource.data = !term
+      ? this.locations
+      : this.locations.filter(l => l.description.toLowerCase().includes(term.toLowerCase()));
+  }
 
+  remove(location: Location) {
+    this.itmSrv.data.pipe(first()).subscribe(itms => {
+      if (itms.find(i => i.location.id === location.id)) {
+        this.dialog.open(DialogInfoComponent,
+          { data: {title: 'Desculpe...', message: 'Não é possível remover este local. Há itens relacionados a ele.'}});
+      } else {
+        this.dialog.open(DialogConfirmationComponent).afterClosed()
+          .subscribe((res: boolean) => {
+            if (res) {
+              this.locSrv.delete(location.id)
+                .subscribe(
+                  itm => null,
+                  err => console.error('Erro ao remover item')
+                );
+            }
+          });
+      }
+    });
+  }
+
+  edit(location: Location) {
+    this.dialog.open(LocationsNewComponent, { data: location });
+  }
 }
