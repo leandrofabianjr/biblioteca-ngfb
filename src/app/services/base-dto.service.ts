@@ -100,7 +100,6 @@ export abstract class BaseDtoService<T extends IModel, T_DTO extends IDto> {
     return from(this.collection().doc(id).delete()
       .then(() => this.stats.pipe(first()).pipe(map(stats => {
         --stats.count;
-        console.log(stats);
         return stats;
       })).toPromise())
       .then(stats => this.statsSrv.set(this.collectionType, stats).toPromise()
