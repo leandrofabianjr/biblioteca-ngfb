@@ -39,6 +39,8 @@ import { PublishersNewComponent } from './publishers/publishers-new/publishers-n
 import { DialogConfirmationComponent } from './dialog-confirmation/dialog-confirmation.component';
 import { TabColumnSearchComponent } from './tab-column-search/tab-column-search.component';
 import { LoggedComponent } from './logged/logged.component';
+import { DialogInfoComponent } from './dialog-info/dialog-info.component';
+import {A11yModule} from '@angular/cdk/a11y';
 
 
 @NgModule({
@@ -61,7 +63,8 @@ import { LoggedComponent } from './logged/logged.component';
     PublishersNewComponent,
     DialogConfirmationComponent,
     TabColumnSearchComponent,
-    LoggedComponent
+    LoggedComponent,
+    DialogInfoComponent
   ],
   imports: [
     BrowserModule,
@@ -87,7 +90,8 @@ import { LoggedComponent } from './logged/logged.component';
     NgSelectModule,
     MatDialogModule,
     MatSelectModule,
-    MatSortModule
+    MatSortModule,
+    A11yModule
   ],
   providers: [{ provide: MatPaginatorIntl, useClass: MatPaginatorIntlPtbr}],
   bootstrap: [AppComponent],
@@ -96,7 +100,8 @@ import { LoggedComponent } from './logged/logged.component';
     GenresNewComponent,
     PublishersNewComponent,
     LocationsNewComponent,
-    DialogConfirmationComponent
+    DialogConfirmationComponent,
+    DialogInfoComponent
   ]
 })
 export class AppModule { }
