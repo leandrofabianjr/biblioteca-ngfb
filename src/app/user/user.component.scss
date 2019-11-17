@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.avatar {
+  max-width: 256px;
+  max-height: 256px;
+  margin: 0 auto;
+  border-radius: 50%;
+  overflow: hidden;
+  img {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.name {
+  text-align: center;
+  h1 { margin-bottom: 8px }
+  p { margin-top: 8px }
+}
+
+.card {
+  padding: 0 32px;
+  border-radius: 8px;
+}
