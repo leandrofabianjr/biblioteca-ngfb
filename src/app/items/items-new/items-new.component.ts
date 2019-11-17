@@ -5,7 +5,7 @@ import {ItemsService} from '../../services/items.service';
 import {AuthorsService} from '../../services/authors.service';
 import {PublishersService} from '../../services/publishers.service';
 import {GenresService} from '../../services/genres.service';
-import {MatDialog} from '@angular/material';
+import {MatDialog, MatSnackBar} from '@angular/material';
 import {LocationsService} from '../../services/locations.service';
 import {Author} from '../../models/author';
 import {Publisher} from '../../models/publisher';
@@ -31,10 +31,6 @@ export class ItemsNewComponent {
   genres: Genre[];
   locations: Location[];
 
-  message: { tipo: string, texto: string };
-
-  private chamou = false;
-
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -44,6 +40,7 @@ export class ItemsNewComponent {
     private pubSrv: PublishersService,
     private gnrSrv: GenresService,
     private locSrv: LocationsService,
+    private snackBar: MatSnackBar,
     public dialog: MatDialog
   ) {
     this.route.params.subscribe(params => {
@@ -74,6 +71,7 @@ export class ItemsNewComponent {
   }
 
   save() {
+    console.log('save');
     if (this.itemForm.valid) {
 
       const item = new Item();
@@ -87,20 +85,14 @@ export class ItemsNewComponent {
 
       this.itmSrv.save(item)
         .subscribe(itm => {
-            this.message = {
-              tipo: 'success',
-              texto: 'Novo item cadastrado com sucesso!'
-            };
+            this.snackBar.open('Item salvo com sucesso!', 'Ok', {duration: 3000});
 
             this.itemForm.reset();
             this.router.navigate(['u', 'items', 'new']);
           },
           err => {
             console.error('Erro ao salvar item', err);
-            this.message = {
-              tipo: 'danger',
-              texto: 'Ops, o item não pode ser cadastrado :('
-            };
+            this.snackBar.open('Ops, o item não pode ser cadastrado :(', 'Ok', {duration: 3000});
           });
     }
   }
@@ -161,7 +153,7 @@ export class ItemsNewComponent {
   searchAuthors(term: string) {
     this.autSrv.data
       .subscribe(
-        auts => this.authors = auts.filter(a => a.name.includes(term)).slice(0, 4),
+        auts => this.authors = auts.filter(a => a.name.toLowerCase().includes(term.toLowerCase())),
         err => console.error(err)
       );
   }
@@ -169,7 +161,7 @@ export class ItemsNewComponent {
   searchPublishers(term: string) {
     this.pubSrv.data
       .subscribe(
-        edts => this.publishers = edts.filter(p => p.name.includes(term)).slice(0, 4),
+        edts => this.publishers = edts.filter(p => p.name.toLowerCase().includes(term.toLowerCase())),
         err => console.error(err)
       );
   }
@@ -177,7 +169,7 @@ export class ItemsNewComponent {
   searchGenres(term: string) {
     this.gnrSrv.data
       .subscribe(
-        gens => this.genres = gens.filter(g => g.description.includes(term)).slice(0, 4),
+        gens => this.genres = gens.filter(g => g.description.toLowerCase().includes(term.toLowerCase())),
         err => console.error(err)
       );
   }
@@ -185,7 +177,7 @@ export class ItemsNewComponent {
   searchLocations(term: string) {
     this.locSrv.data
       .subscribe(
-        locs => this.locations = locs.filter(l => l.description.includes(term)).slice(0, 4),
+        locs => this.locations = locs.filter(l => l.description.toLowerCase().includes(term.toLowerCase())).slice(0, 4),
         err => console.error(err)
       );
   }
