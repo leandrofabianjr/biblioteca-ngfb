@@ -41,7 +41,7 @@ export class LoggedComponent implements OnInit, OnDestroy {
     // ]).pipe(map(() => this.itmSrv.loadData())).subscribe(() => this.loading = false);
 
     /*
-     * O forkjoin acima é preferível ao subscribe hell abaixo, mas por algum motivo
+     * O forkJoin acima é preferível ao subscribe hell abaixo, mas por algum motivo
      * não está finalizando, fazendo com que o loadData do serviço de itens não seja chamado
      */
 
@@ -56,4 +56,7 @@ export class LoggedComponent implements OnInit, OnDestroy {
     this.mobileQuery.removeListener(this.mobileQueryListener);
   }
 
+  logout() {
+    this.auth.logout();
+  }
 }

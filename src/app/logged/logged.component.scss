@@ -51,6 +51,7 @@
 
 h1.app-name {
   margin-left: 8px;
+  cursor: pointer;
 }
 
 .sidenav-container {
@@ -67,4 +68,8 @@ h1.app-name {
 
 .nav-list {
   width: 240px;
+}
+
+.screen-toolbar .spacer {
+  flex: 1 1 auto;
 }
