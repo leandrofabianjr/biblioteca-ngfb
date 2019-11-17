@@ -15,8 +15,6 @@ export class AuthorsComponent implements OnInit {
     this.authors = autSrv.data;
   }
 
-  ngOnInit() {
-    this.autSrv.load();
-  }
+  ngOnInit() { }
 
 }

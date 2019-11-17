@@ -15,8 +15,6 @@ export class PublishersComponent implements OnInit {
     this.publishers = pubSrv.data;
   }
 
-  ngOnInit() {
-    this.pubSrv.load();
-  }
+  ngOnInit() { }
 
 }

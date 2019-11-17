@@ -15,8 +15,6 @@ export class LocationsComponent implements OnInit {
     this.locations = locSrv.data;
   }
 
-  ngOnInit() {
-    this.locSrv.load();
-  }
+  ngOnInit() { }
 
 }

@@ -15,8 +15,6 @@ export class GenresComponent implements OnInit {
     this.genres = gnrSrv.data;
   }
 
-  ngOnInit() {
-    this.gnrSrv.load();
-  }
+  ngOnInit() { }
 
 }
