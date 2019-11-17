@@ -10,25 +10,27 @@ import {LocationsComponent} from './locations/locations.component';
 import {PublishersComponent} from './publishers/publishers.component';
 import {ItemsComponent} from './items/items.component';
 import {ItemsNewComponent} from './items/items-new/items-new.component';
+import {LoggedComponent} from './logged/logged.component';
 
 
 const routes: Routes = [
   { path: '', redirectTo: 'me', pathMatch: 'full' },
   { path: 'login', component: LoginComponent, ...canActivate(() => redirectLoggedInTo(['me'])) },
-  { path: 'logout', component: LogoutComponent },
-  { path: 'me', component: UserComponent, ...canActivate(() => redirectUnauthorizedTo(['login']))},
 
-  { path: 'authors', component: AuthorsComponent, ...canActivate(() => redirectUnauthorizedTo(['login']))},
-  { path: 'genres', component: GenresComponent, ...canActivate(() => redirectUnauthorizedTo(['login']))},
-  { path: 'locations', component: LocationsComponent, ...canActivate(() => redirectUnauthorizedTo(['login']))},
-  { path: 'publishers', component: PublishersComponent, ...canActivate(() => redirectUnauthorizedTo(['login']))},
-  { path: 'items', ...canActivate(() => redirectUnauthorizedTo(['login'])),
-    children: [
+  { path: 'u', component: LoggedComponent, ...canActivate(() => redirectUnauthorizedTo(['login'])), children: [
+    { path: 'logout', component: LogoutComponent },
+    { path: 'me', component: UserComponent},
+
+    { path: 'authors', component: AuthorsComponent},
+    { path: 'genres', component: GenresComponent},
+    { path: 'locations', component: LocationsComponent},
+    { path: 'publishers', component: PublishersComponent},
+    { path: 'items', children: [
       { path: '', component: ItemsComponent },
       { path: 'new', component: ItemsNewComponent },
       { path: ':id', component: ItemsNewComponent }
-    ]
-  },
+    ]}
+  ]}
 ];
 
 @NgModule({
