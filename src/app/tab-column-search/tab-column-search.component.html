@@ -1,11 +1,13 @@
 <div class="header-cel">
   <mat-icon class="search-icon" (click)="displayInput = true">search</mat-icon>
-  <span class="label" mat-sort-header>{{ label }}</span>
+  <span *ngIf="sort" class="label" mat-sort-header>{{ label }}</span>
+  <span *ngIf="!sort" class="label">{{ label }}</span>
 </div>
 <div class="input-search-container" [ngStyle]="{display: displayInput ? 'block' : 'none'}">
   <mat-form-field class="input-search" appearance="outline">
     <mat-label>Pesquisar...</mat-label>
-    <input matInput (appRealTimeSearch)="search.emit($event)">
-    <mat-icon class="close-icon" matSuffix (click)="displayInput = false; search.emit(undefined)">close</mat-icon>
+    <input #inputSearch matInput (appRealTimeSearch)="search.emit($event)">
+    <mat-icon class="close-icon" matSuffix
+      (click)="displayInput = false; inputSearch.value = ''; search.emit(undefined)">close</mat-icon>
   </mat-form-field>
 </div>

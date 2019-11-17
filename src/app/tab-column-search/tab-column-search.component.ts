@@ -8,6 +8,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 export class TabColumnSearchComponent implements OnInit {
 
   @Input('header-label') label = '';
+  @Input('sort') sort: boolean;
   @Output('search') search = new EventEmitter<string>();
 
   displayInput = false;
