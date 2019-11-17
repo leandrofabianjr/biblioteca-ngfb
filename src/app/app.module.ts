@@ -38,6 +38,7 @@ import { LocationsNewComponent } from './locations/locations-new/locations-new.c
 import { PublishersNewComponent } from './publishers/publishers-new/publishers-new.component';
 import { DialogConfirmationComponent } from './dialog-confirmation/dialog-confirmation.component';
 import { TabColumnSearchComponent } from './tab-column-search/tab-column-search.component';
+import { LoggedComponent } from './logged/logged.component';
 
 
 @NgModule({
@@ -59,7 +60,8 @@ import { TabColumnSearchComponent } from './tab-column-search/tab-column-search.
     LocationsNewComponent,
     PublishersNewComponent,
     DialogConfirmationComponent,
-    TabColumnSearchComponent
+    TabColumnSearchComponent,
+    LoggedComponent
   ],
   imports: [
     BrowserModule,
