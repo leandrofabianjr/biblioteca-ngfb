@@ -74,14 +74,7 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumnsAttrs.concat('actions');"></tr>
   </table>
 
-  <mat-paginator
-    [pageIndex]="page"
-    [pageSizeOptions]="[5, 10, 100]"
-    [pageSize]="limit"
-    [length]="itemsStats?.count"
-    (page)="changePage($event)"
-    label
-  ></mat-paginator>
+  <mat-paginator [pageSizeOptions]="[5, 10, 100]" label></mat-paginator>
 
   <div *ngIf="loading" class="loading">
     <p>Carregando seus items...</p>

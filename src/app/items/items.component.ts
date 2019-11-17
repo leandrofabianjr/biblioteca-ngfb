@@ -11,8 +11,6 @@ import {LocationsNewComponent} from '../locations/locations-new/locations-new.co
 import {Publisher} from '../models/publisher';
 import {PublishersNewComponent} from '../publishers/publishers-new/publishers-new.component';
 import {DialogConfirmationComponent} from '../dialog-confirmation/dialog-confirmation.component';
-import {ActivatedRoute, Router} from '@angular/router';
-import {CollectionStats} from '../services/stats.service';
 
 @Component({
   selector: 'app-items',
@@ -28,23 +26,10 @@ export class ItemsComponent implements OnInit {
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
 
-  page = 0;
-  limit: number;
-  sort: string;
-  dir: 'asc'|'desc';
-  itemsStats: CollectionStats;
-
   constructor(
     private itmSrv: ItemsService,
-    public dialog: MatDialog,
-    private route: ActivatedRoute,
-    private router: Router
+    public dialog: MatDialog
   ) {
-    this.route.queryParams.subscribe(params => {
-      this.limit = +params.limit || 5;
-      this.sort = params.sort || this.displayedColumnsAttrs[0];
-      this.dir = +params.sort ? 'desc' : 'asc';
-    });
   }
 
   ngOnInit() {
@@ -52,8 +37,7 @@ export class ItemsComponent implements OnInit {
       this.items.data = itms;
       this.loading = false;
     });
-    this.itmSrv.load(this.limit, this.sort, this.dir);
-    this.itmSrv.stats.subscribe(s => this.itemsStats = s);
+    this.items.paginator = this.paginator;
   }
 
   editAuthor(author: Author) {
@@ -86,38 +70,11 @@ export class ItemsComponent implements OnInit {
     });
   }
 
-  changePage(p: PageEvent) {
-    if (p.pageIndex !== this.page) {
-      this.loading = true;
-      this.page = p.pageIndex;
-      if (p.pageIndex < this.page) {
-        this.itmSrv.loadPrev();
-      } else {
-        this.itmSrv.loadNext();
-      }
-    }
-    this.limit = p.pageSize;
-    this.navigate();
-  }
-
-  private navigate() {
-    const queryParams: any = {};
-
-    if (this.limit) {
-      queryParams.size = this.limit;
-    }
-    if (this.sort) {
-      queryParams.sort = this.sort;
-    }
-
-    this.router.navigate([ '/items' ], { queryParams });
-  }
-
   search(column: string, term: string) {
     this.searchTerms[this.displayedColumnsAttrs.indexOf(column)] = term;
     this.searchTerms.map((t, i) => {
       if (t) {
-        // this.itmSrv.load(this.limit, this.sort, this.dir, [t, 'array-contains', term]);
+        // TODO
       }
     });
   }
