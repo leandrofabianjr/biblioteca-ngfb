@@ -13,7 +13,6 @@ import {Genre} from '../../models/genre';
 import {Location} from '../../models/location';
 import {Item} from '../../models/item';
 import {AuthorsNewComponent} from '../../authors/authors-new/authors-new.component';
-import {forkJoin} from 'rxjs';
 import {PublishersNewComponent} from '../../publishers/publishers-new/publishers-new.component';
 import {GenresNewComponent} from '../../genres/genres-new/genres-new.component';
 import {LocationsNewComponent} from '../../locations/locations-new/locations-new.component';
@@ -50,21 +49,17 @@ export class ItemsNewComponent {
     this.route.params.subscribe(params => {
       const id = params.id;
       if (id) {
-        this.itmSrv.get(id)
-          .subscribe(itm => {
-              this.itemId = id;
-              this.buildForm(itm);
-            },
-            err => console.error('Erro ao procurar item', err)
-          );
+        const itm = this.itmSrv.get(id);
+        if (itm) {
+          this.itemId = id;
+          this.buildForm(itm);
+        } else {
+          // Mostrar mensagem
+        }
       } else {
         this.buildForm();
       }
     });
-    autSrv.load();
-    pubSrv.load();
-    gnrSrv.load();
-    locSrv.load();
   }
 
   private buildForm(item: Item = null) {
@@ -98,7 +93,7 @@ export class ItemsNewComponent {
             };
 
             this.itemForm.reset();
-            this.router.navigate(['/items', 'new']);
+            this.router.navigate(['u', 'items', 'new']);
           },
           err => {
             console.error('Erro ao salvar item', err);
