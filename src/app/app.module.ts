@@ -22,7 +22,7 @@ import {
   MatCardModule, MatChipsModule, MatDialogModule, MatFormFieldModule,
   MatIconModule, MatInputModule,
   MatListModule, MatPaginatorIntl, MatPaginatorModule, MatProgressSpinnerModule, MatSelectModule,
-  MatSidenavModule, MatSortModule,
+  MatSidenavModule, MatSnackBarModule, MatSortModule,
   MatTableModule,
   MatToolbarModule
 } from '@angular/material';
@@ -91,7 +91,8 @@ import {A11yModule} from '@angular/cdk/a11y';
     MatDialogModule,
     MatSelectModule,
     MatSortModule,
-    A11yModule
+    A11yModule,
+    MatSnackBarModule
   ],
   providers: [{ provide: MatPaginatorIntl, useClass: MatPaginatorIntlPtbr}],
   bootstrap: [AppComponent],
