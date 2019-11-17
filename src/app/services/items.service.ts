@@ -1,16 +1,11 @@
 import {Injectable} from '@angular/core';
 import {BaseDtoService, CollectionType, IDto} from './base-dto.service';
-import {AngularFirestore, DocumentReference, FieldPath} from '@angular/fire/firestore';
+import {AngularFirestore, DocumentReference} from '@angular/fire/firestore';
 import {Item} from '../models/item';
-import {IPublisherDTO, PublishersService} from './publishers.service';
-import {Publisher} from '../models/publisher';
-import {AuthorsService, IAuthorDTO} from './authors.service';
-import {GenresService, IGenreDTO} from './genres.service';
-import {Genre} from '../models/genre';
-import {Author} from '../models/author';
-import {ILocationDTO, LocationsService} from './locations.service';
-import {Location} from '../models/location';
-import WhereFilterOp = firebase.firestore.WhereFilterOp;
+import {PublishersService} from './publishers.service';
+import {AuthorsService} from './authors.service';
+import {GenresService} from './genres.service';
+import {LocationsService} from './locations.service';
 
 export interface IItemDTO extends IDto {
   description: string;
@@ -25,13 +20,14 @@ export interface IItemDTO extends IDto {
   providedIn: 'root'
 })
 export class ItemsService extends BaseDtoService<Item, IItemDTO> {
-  constructor(afs: AngularFirestore) {
+  constructor(
+    afs: AngularFirestore,
+    private autSrv: AuthorsService,
+    private gnrSrv: GenresService,
+    private pubSrv: PublishersService,
+    private locSrv: LocationsService
+  ) {
     super(afs, CollectionType.Items);
-  }
-
-  load(limit: number = 5, orderBy: string = 'description', orderDirection: 'asc' | 'desc' = 'asc',
-       where: [(string | FieldPath), WhereFilterOp, any] = null) {
-    super.load(limit, orderBy, orderDirection, where);
   }
 
   protected toDto(obj: Item): IItemDTO {
@@ -47,55 +43,16 @@ export class ItemsService extends BaseDtoService<Item, IItemDTO> {
     };
   }
 
-  protected toModel(dto: IItemDTO): Promise<Item> {
-    return Promise.all([
-      dto.location.get()
-        .then(ss => ({ id: ss.id, ...ss.data() } as ILocationDTO))
-        .then(l => {
-          const loc = new Location();
-          loc.id = l.id;
-          loc.uid = l.uid;
-          loc.description = l.description;
-          return loc;
-        }),
-      Promise.all(dto.publishers.map(ref => ref.get()))
-        .then((SSs) => SSs.map(ss => ({ id: ss.id, ...ss.data()} as IPublisherDTO)))
-        .then(pubs => pubs.map(p => {
-          const pub = new Publisher();
-          pub.id = p.id;
-          pub.uid = p.uid;
-          pub.name = p.name;
-          return pub;
-        })),
-      Promise.all(dto.authors.map(ref => ref.get()))
-        .then((SSs) => SSs.map(ss => ({ id: ss.id, ...ss.data()} as IAuthorDTO)))
-        .then(auts => auts.map(a => {
-          const aut = new Author();
-          aut.id = a.id;
-          aut.uid = a.uid;
-          aut.name = a.name;
-          return aut;
-        })),
-      Promise.all(dto.genres.map(ref => ref.get()))
-        .then((SSs) => SSs.map(ss => ({ id: ss.id, ...ss.data()} as IGenreDTO)))
-        .then(gnrs => gnrs.map(g => {
-          const gnr = new Genre();
-          gnr.id = g.id;
-          gnr.uid = g.uid;
-          gnr.description = g.description;
-          return gnr;
-        }))
-    ]).then(([loc, pubs, auts, gnrs]) => {
-        const obj = new Item();
-        obj.id = dto.id;
-        obj.uid = dto.uid;
-        obj.year = dto.year;
-        obj.description = dto.description;
-        obj.location = loc;
-        obj.publishers = pubs;
-        obj.authors = auts;
-        obj.genres = gnrs;
-        return obj;
-      });
+  protected toModel(dto: IItemDTO): Item {
+    const obj = new Item();
+    obj.id = dto.id;
+    obj.uid = dto.uid;
+    obj.year = dto.year;
+    obj.description = dto.description;
+    obj.location = this.locSrv.get(dto.location.id);
+    obj.publishers = dto.publishers.map(ref => this.pubSrv.get(ref.id));
+    obj.authors = dto.authors.map(ref => this.autSrv.get(ref.id));
+    obj.genres = dto.genres.map(ref => this.gnrSrv.get(ref.id));
+    return obj;
   }
 }

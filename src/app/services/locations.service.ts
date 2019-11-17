@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BaseDtoService, CollectionType, IDto} from './base-dto.service';
-import {AngularFirestore, FieldPath} from '@angular/fire/firestore';
+import {AngularFirestore} from '@angular/fire/firestore';
 import {Location} from '../models/location';
-import WhereFilterOp = firebase.firestore.WhereFilterOp;
 
 export interface ILocationDTO extends IDto {
   description: string;
@@ -16,11 +15,6 @@ export class LocationsService extends BaseDtoService<Location, ILocationDTO> {
     super(afs, CollectionType.Locations);
   }
 
-  load(limit: number = 5, orderBy: string = 'description', orderDirection: 'asc' | 'desc' = 'asc',
-       where: [(string | FieldPath), WhereFilterOp, any] = null) {
-    super.load(limit, orderBy, orderDirection, where);
-  }
-
   protected toDto(obj: Location): ILocationDTO {
      return {
       id: obj.id,
@@ -29,11 +23,11 @@ export class LocationsService extends BaseDtoService<Location, ILocationDTO> {
     };
   }
 
-  protected toModel(dto: ILocationDTO): Promise<Location> {
+  protected toModel(dto: ILocationDTO): Location {
     const obj = new Location();
     obj.id = dto.id;
     obj.uid = dto.uid;
     obj.description = dto.description;
-    return new Promise<Location>(res => res(obj));
+    return obj;
   }
 }
