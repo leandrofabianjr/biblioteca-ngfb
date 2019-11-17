@@ -15,9 +15,7 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     this.auth.user.subscribe(u => {
       if (u) {
-      console.log('Já logado');
-      } else {
-        console.log('Não logado');
+        this.route.navigate(['u', 'items']);
       }
     });
   }
