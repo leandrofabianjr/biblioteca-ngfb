@@ -1,9 +1,7 @@
-import { AngularFirestore, AngularFirestoreCollection, FieldPath, QueryDocumentSnapshot, QueryFn} from '@angular/fire/firestore';
-import {BehaviorSubject, from, Observable, of} from 'rxjs';
+import { AngularFirestore, AngularFirestoreCollection, QueryFn} from '@angular/fire/firestore';
+import {BehaviorSubject, from, Observable} from 'rxjs';
 import {IModel} from '../models/model.interface';
-import WhereFilterOp = firebase.firestore.WhereFilterOp;
 import {first, map} from 'rxjs/operators';
-import OrderByDirection = firebase.firestore.OrderByDirection;
 import {CollectionStats, StatsService} from './stats.service';
 
 export enum CollectionType {
@@ -19,44 +17,15 @@ export interface IDto {
   uid: string;
 }
 
-class PaginationData<T_DTO> {
-  firstDoc: QueryDocumentSnapshot<any>;
-  lastDoc: QueryDocumentSnapshot<any>;
-  limit: number;
-  orderBy: string;
-  orderDirection: OrderByDirection;
-  where: [ string | FieldPath, WhereFilterOp, any];
-
-  constructor(
-    limit: number,
-    orderBy: string,
-    orderDirection: OrderByDirection,
-    where: [(string | FieldPath), WhereFilterOp, any]) {
-    this.limit = limit;
-    this.orderBy = orderBy;
-    this.orderDirection = orderDirection;
-    this.where = where;
-  }
-}
-
 export abstract class BaseDtoService<T extends IModel, T_DTO extends IDto> {
   private readonly collectionType;
   private collection: (queryFn?: QueryFn) => AngularFirestoreCollection<T_DTO>;
   private dataSjt: BehaviorSubject<T[]> = new BehaviorSubject<T[]>([]);
-  private pd: PaginationData<T_DTO>;
   private statsSrv: StatsService;
   readonly uid: string;
   stats: Observable<CollectionStats>;
 
   private collectionData: T[] = [];
-
-  private loadQueryFn = (ref) => {
-    const r = ref
-      .where('uid', '==', this.uid)
-      .limit(this.pd.limit)
-      .orderBy(this.pd.orderBy, this.pd.orderDirection);
-    return this.pd.where ? r.where(this.pd.where[0], this.pd.where[1], this.pd.where[2]) : r;
-  }
 
   protected constructor(protected afs: AngularFirestore, collectionType: CollectionType) {
     this.collectionType = collectionType;
