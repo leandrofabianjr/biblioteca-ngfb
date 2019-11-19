@@ -1,5 +1,5 @@
 import { AngularFirestore, AngularFirestoreCollection, QueryFn} from '@angular/fire/firestore';
-import {BehaviorSubject, from, Observable} from 'rxjs';
+import {BehaviorSubject, from, Observable, ReplaySubject} from 'rxjs';
 import {IModel} from '../models/model.interface';
 import {first, map} from 'rxjs/operators';
 import {CollectionStats, StatsService} from './stats.service';
@@ -24,7 +24,7 @@ export abstract class BaseDtoService<T extends IModel, T_DTO extends IDto> {
   private statsSrv: StatsService;
   readonly uid: string;
   stats: Observable<CollectionStats>;
-
+  private loadedSjt = new ReplaySubject<void>();
   private collectionData: T[] = [];
 
   protected constructor(protected afs: AngularFirestore, collectionType: CollectionType) {
@@ -32,7 +32,7 @@ export abstract class BaseDtoService<T extends IModel, T_DTO extends IDto> {
     this.collection = (fn?) => afs.collection<T_DTO>(collectionType, fn);
 
     // @ts-ignore
-    this.uid = afs.firestore._credentials.currentUser.uid.toString();
+    this.uid = afs.firestore._credentials.currentUser.uid;
     if (!this.uid) { throw Error('Usuário não encontrado'); }
 
     this.statsSrv = new StatsService(afs, this.collectionType);
@@ -41,6 +41,10 @@ export abstract class BaseDtoService<T extends IModel, T_DTO extends IDto> {
 
   get data(): Observable<T[]> {
     return this.dataSjt.asObservable();
+  }
+
+  get loaded(): Observable<void> {
+    return this.loadedSjt.asObservable();
   }
 
   protected abstract toModel(dto: T_DTO): T;
@@ -65,6 +69,8 @@ export abstract class BaseDtoService<T extends IModel, T_DTO extends IDto> {
         }
       });
       this.dataSjt.next(this.collectionData);
+      this.loadedSjt.next();
+      this.loadedSjt.complete();
     }));
   }
 

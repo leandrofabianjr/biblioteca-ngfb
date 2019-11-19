@@ -33,23 +33,11 @@ export class LoggedComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // forkJoin([
-    //   this.autSrv.loadData(),
-    //   this.gnrSrv.loadData(),
-    //   this.pubSrv.loadData(),
-    //   this.locSrv.loadData(),
-    // ]).pipe(map(() => this.itmSrv.loadData())).subscribe(() => this.loading = false);
-
-    /*
-     * O forkJoin acima é preferível ao subscribe hell abaixo, mas por algum motivo
-     * não está finalizando, fazendo com que o loadData do serviço de itens não seja chamado
-     */
-
-    this.autSrv.loadData().subscribe(() =>
-      this.gnrSrv.loadData().subscribe(() =>
-        this.pubSrv.loadData().subscribe(() =>
-          this.locSrv.loadData().subscribe(() =>
-            this.itmSrv.loadData().subscribe(() => this.loading = false)))));
+    this.autSrv.loaded.subscribe(() => this.gnrSrv.loadData().subscribe());
+    this.gnrSrv.loaded.subscribe(() => this.pubSrv.loadData().subscribe());
+    this.pubSrv.loaded.subscribe(() => this.locSrv.loadData().subscribe());
+    this.locSrv.loaded.subscribe(() => this.itmSrv.loadData().subscribe(() => this.loading = false));
+    this.autSrv.loadData().subscribe();
   }
 
   ngOnDestroy(): void {
