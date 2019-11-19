@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import {AngularFireAuth} from '@angular/fire/auth';
-import {from, Observable, of} from 'rxjs';
-import {AngularFirestore, AngularFirestoreDocument} from '@angular/fire/firestore';
+import {forkJoin, from, Observable, of} from 'rxjs';
+import {AngularFirestore} from '@angular/fire/firestore';
 import {Router} from '@angular/router';
-import {switchMap} from 'rxjs/operators';
+import {flatMap, map, switchMap} from 'rxjs/operators';
 import {auth} from 'firebase';
 
 export interface IAppUserDTO {
@@ -39,14 +39,30 @@ export class AuthService {
 
 
   private updateUserData(user) {
-    const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
-    const data: IAppUserDTO = {
-      uid: user.uid,
-      email: user.email,
-      name: user.displayName,
-      photoUrl: user.photoURL,
-    };
-    return userRef.set(data, { merge: true });
+    return this.afs.doc(`users/${user.uid}`).set({
+        uid: user.uid,
+        email: user.email,
+        name: user.displayName,
+        photoUrl: user.photoURL
+      }, { merge: true })
+      .then(u => [u, this.createUsersStatsIfNotExists(user.uid).toPromise()])
+      .then(([u, _]) => u);
+  }
+
+  private createUsersStatsIfNotExists(uid: string): Observable<void> {
+    const newDoc = (stat: string) => of(this.afs.doc(`users/${uid}/stats/${stat}`). set({count: 0}));
+    return this.afs.collection('users').doc(uid).collection('stats', r => r.limit(1)).get().pipe(
+      flatMap(ss => {
+        if (ss.size) { return of(); }
+        return forkJoin([
+          newDoc('items'),
+          newDoc('authors'),
+          newDoc('genres'),
+          newDoc('locations'),
+          newDoc('publishers')
+        ]).pipe(map(() => null));
+      })
+    );
   }
 
 
