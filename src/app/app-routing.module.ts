@@ -1,4 +1,4 @@
-import {Component, NgModule} from '@angular/core';
+import {NgModule} from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import {LoginComponent} from './login/login.component';
 import {UserComponent} from './user/user.component';
@@ -17,18 +17,18 @@ const routes: Routes = [
   { path: '', redirectTo: 'u/me', pathMatch: 'full' },
   { path: 'login', component: LoginComponent, ...canActivate(() => redirectLoggedInTo(['me'])) },
 
-  { path: 'u', component: LoggedComponent, ...canActivate(() => redirectUnauthorizedTo(['login'])), children: [
-    { path: 'logout', component: LogoutComponent },
-    { path: 'me', component: UserComponent},
+  { path: 'u', component: LoggedComponent, ...canActivate(() => redirectUnauthorizedTo(['/login'])), children: [
+    { path: 'logout', component: LogoutComponent, ...canActivate(() => redirectUnauthorizedTo(['/login']))},
+    { path: 'me', component: UserComponent, ...canActivate(() => redirectUnauthorizedTo(['/login']))},
 
-    { path: 'authors', component: AuthorsComponent},
-    { path: 'genres', component: GenresComponent},
-    { path: 'locations', component: LocationsComponent},
-    { path: 'publishers', component: PublishersComponent},
-    { path: 'items', children: [
-      { path: '', component: ItemsComponent },
-      { path: 'new', component: ItemsNewComponent },
-      { path: ':id', component: ItemsNewComponent }
+    { path: 'authors', component: AuthorsComponent, ...canActivate(() => redirectUnauthorizedTo(['/login']))},
+    { path: 'genres', component: GenresComponent, ...canActivate(() => redirectUnauthorizedTo(['/login']))},
+    { path: 'locations', component: LocationsComponent, ...canActivate(() => redirectUnauthorizedTo(['/login']))},
+    { path: 'publishers', component: PublishersComponent, ...canActivate(() => redirectUnauthorizedTo(['/login']))},
+    { path: 'items', ...canActivate(() => redirectUnauthorizedTo(['/login'])), children: [
+      { path: '', component: ItemsComponent, ...canActivate(() => redirectUnauthorizedTo(['/login']))},
+      { path: 'new', component: ItemsNewComponent, ...canActivate(() => redirectUnauthorizedTo(['/login']))},
+      { path: ':id', component: ItemsNewComponent, ...canActivate(() => redirectUnauthorizedTo(['/login']))},
     ]}
   ]}
 ];
