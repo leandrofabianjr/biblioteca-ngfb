@@ -13,7 +13,7 @@ export class StatsService {
 
   constructor(private afs: AngularFirestore, collectionType: CollectionType) {
     // @ts-ignore
-    this.uid = afs.firestore._credentials.currentUser.uid.toString();
+    this.uid = afs.firestore._credentials.currentUser.uid;
     if (!this.uid) { throw Error('Usuário não encontrado'); }
 
     this.afs.doc(this.path(collectionType)).valueChanges()
