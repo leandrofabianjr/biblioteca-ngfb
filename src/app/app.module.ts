@@ -41,7 +41,7 @@ import { TabColumnSearchComponent } from './tab-column-search/tab-column-search.
 import { LoggedComponent } from './logged/logged.component';
 import { DialogInfoComponent } from './dialog-info/dialog-info.component';
 import {A11yModule} from '@angular/cdk/a11y';
-
+import { AdsenseModule } from 'ng2-adsense';
 
 @NgModule({
   declarations: [
@@ -92,7 +92,11 @@ import {A11yModule} from '@angular/cdk/a11y';
     MatSelectModule,
     MatSortModule,
     A11yModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    AdsenseModule.forRoot({
+      adClient: 'ca-pub-3580088567894548',
+      adSlot: 7259870550,
+    }),
   ],
   providers: [{ provide: MatPaginatorIntl, useClass: MatPaginatorIntlPtbr}],
   bootstrap: [AppComponent],
