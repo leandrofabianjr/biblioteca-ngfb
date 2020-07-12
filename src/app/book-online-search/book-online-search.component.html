@@ -1,0 +1,40 @@
+<h1 mat-dialog-title>Pesquisa de livros online</h1>
+<div mat-dialog-content>
+  <mat-form-field class="search-input">
+    <input
+      matInput
+      type="text"
+      id="description"
+      placeholder="Pesquise por ISBN, nome, autor etc"
+      (appRealTimeSearch)="search($event)"
+    >
+    <mat-icon matPrefix>search</mat-icon>
+  </mat-form-field>
+
+  <mat-card *ngFor="let book of booksResponse?.items" class="item-card">
+    <img class="item-thumbnail" [src]="book?.volumeInfo?.imageLinks?.smallThumbnail">
+    <mat-card-title
+      class="item-header single-line-content"
+      [title]="book?.volumeInfo?.title"
+    >{{book?.volumeInfo?.title}}</mat-card-title>
+    <mat-card-content
+      class="item-content single-line-content"
+    >
+      <mat-chip-list>
+        <mat-chip *ngFor="let author of book?.volumeInfo?.authors" selectable="false">{{ author }}</mat-chip>
+      </mat-chip-list>
+      <p [title]="'Publicado em ' + book?.volumeInfo?.publishedDate"
+         class="item-published">{{book?.volumeInfo?.publishedDate}}</p>
+      <p [title]="book?.volumeInfo?.description" class="item-description">{{book?.volumeInfo?.description}}</p>
+    </mat-card-content>
+    <mat-card-actions class="item-actions">
+      <button mat-button color="accent" (click)="useItem(book)">Importar este</button>
+    </mat-card-actions>
+
+  </mat-card>
+
+  <span *ngIf="booksResponse?.totalItems == 0">Desculpe! Nenhum item foi entrado ☹️</span>
+</div>
+<div mat-dialog-actions class="search-actions">
+  <button mat-button [mat-dialog-close]="null">Cancelar</button>
+</div>

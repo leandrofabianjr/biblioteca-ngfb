@@ -1,0 +1,37 @@
+.search-input {
+  width: 100%;
+}
+
+.search-actions {
+  justify-content: flex-end;
+}
+
+.single-line-content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.item-card {
+  margin-bottom: 16px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas: 'img hdr' 'img ctt' 'img act';
+  grid-gap: 8px 16px;
+
+  .item-thumbnail {
+    grid-area: img;
+    max-height: 160px;
+  }
+  .item-header {
+    grid-area: hdr;
+  }
+  .item-content {
+    grid-area: ctt;
+  }
+  .item-actions {
+    grid-area: act;
+    display: flex;
+    justify-content: flex-end;
+  }
+}

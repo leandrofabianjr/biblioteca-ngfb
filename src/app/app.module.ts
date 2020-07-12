@@ -18,13 +18,14 @@ import { PublishersComponent } from './publishers/publishers.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ItemsComponent } from './items/items.component';
 import {
+  MatAutocompleteModule,
   MatButtonModule,
   MatCardModule, MatChipsModule, MatDialogModule, MatFormFieldModule,
   MatIconModule, MatInputModule,
   MatListModule, MatPaginatorIntl, MatPaginatorModule, MatProgressSpinnerModule, MatSelectModule,
   MatSidenavModule, MatSnackBarModule, MatSortModule,
   MatTableModule,
-  MatToolbarModule
+  MatToolbarModule, MatTooltipModule
 } from '@angular/material';
 import { MatPaginatorIntlPtbr } from './mat-paginator-intl-ptbr';
 import { ItemsNewComponent } from './items/items-new/items-new.component';
@@ -42,6 +43,8 @@ import { LoggedComponent } from './logged/logged.component';
 import { DialogInfoComponent } from './dialog-info/dialog-info.component';
 import { A11yModule } from '@angular/cdk/a11y';
 import { AdsenseModule } from 'ng2-adsense';
+import { BookOnlineSearchComponent } from './book-online-search/book-online-search.component';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -64,7 +67,8 @@ import { AdsenseModule } from 'ng2-adsense';
     DialogConfirmationComponent,
     TabColumnSearchComponent,
     LoggedComponent,
-    DialogInfoComponent
+    DialogInfoComponent,
+    BookOnlineSearchComponent
   ],
   imports: [
     BrowserModule,
@@ -93,10 +97,13 @@ import { AdsenseModule } from 'ng2-adsense';
     MatSortModule,
     A11yModule,
     MatSnackBarModule,
+    HttpClientModule,
     AdsenseModule.forRoot({
       adClient: 'ca-pub-3580088567894548',
       adSlot: 7259870550,
     }),
+    MatAutocompleteModule,
+    MatTooltipModule,
   ],
   providers: [
     {
@@ -118,7 +125,8 @@ import { AdsenseModule } from 'ng2-adsense';
     PublishersNewComponent,
     LocationsNewComponent,
     DialogConfirmationComponent,
-    DialogInfoComponent
+    DialogInfoComponent,
+    BookOnlineSearchComponent
   ]
 })
 export class AppModule { }

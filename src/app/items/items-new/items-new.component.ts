@@ -16,6 +16,8 @@ import {AuthorsNewComponent} from '../../authors/authors-new/authors-new.compone
 import {PublishersNewComponent} from '../../publishers/publishers-new/publishers-new.component';
 import {GenresNewComponent} from '../../genres/genres-new/genres-new.component';
 import {LocationsNewComponent} from '../../locations/locations-new/locations-new.component';
+import {BookOnlineSearchComponent} from '../../book-online-search/book-online-search.component';
+import {GoogleBook} from '../../services/google-books.service';
 
 @Component({
   selector: 'app-items-new',
@@ -180,5 +182,16 @@ export class ItemsNewComponent {
         locs => this.locations = locs.filter(l => l.description.toLowerCase().includes(term.toLowerCase())).slice(0, 4),
         err => console.error(err)
       );
+  }
+
+  onlineSearch() {
+    const dialogRef = this.dialog.open(BookOnlineSearchComponent, { minWidth: '80vw' });
+
+    dialogRef.afterClosed()
+      .subscribe((result: GoogleBook) => {
+        if (result) {
+          console.log(result);
+        }
+      });
   }
 }

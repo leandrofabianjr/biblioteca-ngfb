@@ -1,8 +1,9 @@
 <mat-spinner *ngIf="!itemForm"></mat-spinner>
 
 <mat-card *ngIf="itemForm">
-  <mat-card-header>
+  <mat-card-header class="title-header">
     <mat-card-title>{{ itemId ? 'Editar' : 'Novo' }} item</mat-card-title>
+    <button mat-button (click)="onlineSearch()" color="accent">Procurar online</button>
   </mat-card-header>
 
   <mat-card-content>
