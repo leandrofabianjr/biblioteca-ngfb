@@ -4,13 +4,13 @@ import { AngularFireModule } from '@angular/fire';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import {environment} from '../environments/environment';
-import {AngularFirestoreModule} from '@angular/fire/firestore';
-import {AngularFireAuthModule} from '@angular/fire/auth';
+import { environment } from '../environments/environment';
+import { AngularFirestoreModule, FirestoreSettingsToken } from '@angular/fire/firestore';
+import { AngularFireAuthModule } from '@angular/fire/auth';
 import { LoginComponent } from './login/login.component';
 import { UserComponent } from './user/user.component';
 import { LogoutComponent } from './logout/logout.component';
-import {AngularFireAuthGuardModule} from '@angular/fire/auth-guard';
+import { AngularFireAuthGuardModule } from '@angular/fire/auth-guard';
 import { AuthorsComponent } from './authors/authors.component';
 import { GenresComponent } from './genres/genres.component';
 import { LocationsComponent } from './locations/locations.component';
@@ -26,11 +26,11 @@ import {
   MatTableModule,
   MatToolbarModule
 } from '@angular/material';
-import {MatPaginatorIntlPtbr} from './mat-paginator-intl-ptbr';
+import { MatPaginatorIntlPtbr } from './mat-paginator-intl-ptbr';
 import { ItemsNewComponent } from './items/items-new/items-new.component';
-import {ReactiveFormsModule} from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { InfoErroCampoComponent } from './info-erro-campo/info-erro-campo.component';
-import {NgSelectModule} from '@ng-select/ng-select';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { RealTimeSearchDirective } from './directives/real-time-search.directive';
 import { AuthorsNewComponent } from './authors/authors-new/authors-new.component';
 import { GenresNewComponent } from './genres/genres-new/genres-new.component';
@@ -40,7 +40,7 @@ import { DialogConfirmationComponent } from './dialog-confirmation/dialog-confir
 import { TabColumnSearchComponent } from './tab-column-search/tab-column-search.component';
 import { LoggedComponent } from './logged/logged.component';
 import { DialogInfoComponent } from './dialog-info/dialog-info.component';
-import {A11yModule} from '@angular/cdk/a11y';
+import { A11yModule } from '@angular/cdk/a11y';
 import { AdsenseModule } from 'ng2-adsense';
 
 @NgModule({
@@ -98,7 +98,19 @@ import { AdsenseModule } from 'ng2-adsense';
       adSlot: 7259870550,
     }),
   ],
-  providers: [{ provide: MatPaginatorIntl, useClass: MatPaginatorIntlPtbr}],
+  providers: [
+    {
+      provide: MatPaginatorIntl,
+      useClass: MatPaginatorIntlPtbr,
+    },
+    {
+      provide: FirestoreSettingsToken,
+      useValue: environment.production ? undefined : {
+        host: 'localhost:8080',
+        ssl: false
+      }
+    }
+  ],
   bootstrap: [AppComponent],
   entryComponents: [
     AuthorsNewComponent,
