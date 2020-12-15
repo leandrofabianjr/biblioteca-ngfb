@@ -42,7 +42,7 @@ import { TabColumnSearchComponent } from './tab-column-search/tab-column-search.
 import { LoggedComponent } from './logged/logged.component';
 import { DialogInfoComponent } from './dialog-info/dialog-info.component';
 import { A11yModule } from '@angular/cdk/a11y';
-import { AdsenseModule } from 'ng2-adsense';
+// import { AdsenseModule } from 'ng2-adsense';
 import { BookOnlineSearchComponent } from './book-online-search/book-online-search.component';
 import {HttpClientModule} from '@angular/common/http';
 
@@ -98,10 +98,10 @@ import {HttpClientModule} from '@angular/common/http';
     A11yModule,
     MatSnackBarModule,
     HttpClientModule,
-    AdsenseModule.forRoot({
-      adClient: 'ca-pub-3580088567894548',
-      adSlot: 7259870550,
-    }),
+    // AdsenseModule.forRoot({
+    //   adClient: 'ca-pub-3580088567894548',
+    //   adSlot: 7259870550,
+    // }),
     MatAutocompleteModule,
     MatTooltipModule,
     FormsModule,
