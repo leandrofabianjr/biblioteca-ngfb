@@ -29,7 +29,7 @@ import {
 } from '@angular/material';
 import { MatPaginatorIntlPtbr } from './mat-paginator-intl-ptbr';
 import { ItemsNewComponent } from './items/items-new/items-new.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InfoErroCampoComponent } from './info-erro-campo/info-erro-campo.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { RealTimeSearchDirective } from './directives/real-time-search.directive';
@@ -104,6 +104,7 @@ import {HttpClientModule} from '@angular/common/http';
     }),
     MatAutocompleteModule,
     MatTooltipModule,
+    FormsModule,
   ],
   providers: [
     {

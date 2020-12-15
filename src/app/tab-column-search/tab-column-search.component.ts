@@ -9,9 +9,10 @@ export class TabColumnSearchComponent implements OnInit {
 
   @Input('header-label') label = '';
   @Input('sort') sort: boolean;
+  @Input('text') inputText = '';
   @Output('search') search = new EventEmitter<string>();
 
-  displayInput = false;
+  displayInput = !!this.inputText;
 
   constructor() { }
 
